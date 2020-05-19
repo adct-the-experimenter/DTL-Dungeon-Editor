@@ -26,6 +26,7 @@
 #include "game_inventory.h" //for weapons and items in game world 
 #include "player_media_loader.h" //for loading media for player
 
+#include "Dungeon.h"
 
 /** Constants and Global Variables**/
 
@@ -182,7 +183,7 @@ int main(int argc, char* args[])
         while(!quitGame) //while state_stack is not empty, terminates if game_intro is popped off
         {
             //call the function pointer of the StateStruct on top of the stack
-            if(!pauseStack){state_stack.top().StatePointer();}
+            state_stack.top().StatePointer();
         }
         
         //empty stack
@@ -292,7 +293,7 @@ void GameLoop()
 void Dungeon1()
 {
     
-	//std::unique_ptr <Labyrinth> labyrinthUPtr(new Labyrinth() );
+	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
 	
     
     std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
@@ -345,7 +346,7 @@ void Dungeon1()
 		   
 	/** GameLoop **/
 	//set base game state to gDungeon1
-	baseGameState = labyrinthUPtr.get();
+	baseGameState = dungeonUPtr.get();
 	baseGameState->setState(GameState::State::RUNNING);
 	//start timers 
 	stepTimer.start();
@@ -384,7 +385,7 @@ void Dungeon1()
 	
 	//delete doors and keys
 	//delete tiles
-	labyrinthUPtr->freeResources();
+	dungeonUPtr->freeResources();
 	
 	if(baseGameState->getState() == GameState::State::EXIT )
 	{

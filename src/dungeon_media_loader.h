@@ -1,6 +1,8 @@
 #ifndef DUNGEON_MEDIA_LOADER_H
 #define DUNGEON_MEDIA_LOADER_H
 
+#include "globalvariables.h"
+#include "LTexture.h"
 
 bool loadDungeon_Door_Key_Media(SDL_Renderer* gRenderer);
 void freeDungeon_Door_Key_Media();

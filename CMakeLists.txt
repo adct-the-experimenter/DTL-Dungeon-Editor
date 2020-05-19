@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1.1)
 
 set (CMAKE_CXX_STANDARD 11)
 
-set(PROJECT_NAME Door-to-Life)
+set(PROJECT_NAME DTL-Dungeon-Editor)
 project (${PROJECT_NAME} LANGUAGES C CXX)
 
 option(DATAPATH "Path to data Directory" ON)
@@ -40,6 +40,7 @@ include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR}
 
 
 set(SOURCES src/main.cpp
+src/Dungeon.cpp
 src/collisionhandler.cpp
 src/audio_renderer.cpp
 src/enemy_inventory.cpp
@@ -48,7 +49,6 @@ src/enemy_media_loader.cpp
 src/player_media_loader.cpp
 src/game_inventory.cpp
 src/weapons_loader.cpp
-src/item.cpp
 src/Dungeon_Tile.cpp src/TileMapDimensions.cpp
 src/door.cpp src/key.cpp
 src/gun.cpp src/bullet.cpp src/sword.cpp src/weapon.cpp
