@@ -9,9 +9,9 @@ void freeDungeon_Door_Key_Media();
 
 //Dungeon Media
 //friend functions from DungeonNode class
-bool setupLoad_LabyrinthMedia(SDL_Renderer* gRenderer);
-bool loadLabyrinthMedia(SDL_Renderer* gRenderer,LTexture* tileMap,ALuint* source,ALuint* buffer);
-void freeLabyrinthMedia(LTexture* tileMap,ALuint* source,ALuint* buffer);
+bool setupLoad_DungeonMedia(SDL_Renderer* gRenderer);
+bool loadDungeonMedia(SDL_Renderer* gRenderer,LTexture* tileMap,ALuint* source,ALuint* buffer);
+void freeDungeonMedia(LTexture* tileMap,ALuint* source,ALuint* buffer);
 
 extern ALuint dungeonMusicSource;
 extern ALuint dungeonMusicBuffer;

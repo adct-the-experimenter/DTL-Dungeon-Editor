@@ -1,7 +1,7 @@
 #include "Dungeon.h"
 
     
-bool loadLabyrinthMedia(SDL_Renderer* gRenderer,LTexture* tileMap,
+bool loadDungeonMedia(SDL_Renderer* gRenderer,LTexture* tileMap,
 ALuint* source,ALuint* buffer)
 {
     bool success = true;
@@ -40,7 +40,7 @@ ALuint* source,ALuint* buffer)
     return success;
 }
 
-void freeLabyrinthMedia(LTexture* tileMap,
+void freeDungeonMedia(LTexture* tileMap,
                         ALuint* source,ALuint* buffer)
 {
     //free source
@@ -60,10 +60,6 @@ Dungeon::Dungeon()
     //start off with running state
     Dungeon::setState(GameState::State::RUNNING);
 
-
-    loopSFX = 0;
-
-    keyDisappear = false;
 
 }
 
@@ -85,6 +81,27 @@ Dungeon::~Dungeon()
     }
     
 
+}
+
+void Dungeon::GenerateEmptyDungeon()
+{
+	std::int16_t startX = 0;
+    std::int16_t startY = 0;
+    
+    std::int16_t numTiles = 0;
+    
+    std::int16_t tileWidth = globalTileWidth;
+    std::int16_t tileHeight = globalTileHeight;
+
+    //calculate number of tiles in dungeon
+    numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
+    
+    Dungeon::createBlankTiles(startX,startY,
+                            tileWidth,tileHeight,
+                            numTiles);
+    
+    //set tile clips
+    Dungeon::setTiles();
 }
 
  void Dungeon::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight)
@@ -161,249 +178,6 @@ void Dungeon::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
 
 }
 
-void Dungeon::randomGeneration(RNGType& rngData, boost::random::uniform_int_distribution <> zero2twelve)
-{
-    //initialze random number
-    int randNumber = 0;
-
-    for(size_t i = 0; i < dungeonTileSet.size(); ++i)
-    {
-        //generate random number
-        boost::random::variate_generator <RNGType&,boost::random::uniform_int_distribution <> > Die_12(rngData, zero2twelve);
-        randNumber = Die_12();
-
-        //std::cout << "DungeonTile Number:" << dungeonTileSet[i]->getTileNumber() << " randNumber:" << randNumber << std::endl;
-        dungeonTileSet[i]->setType((DungeonTile::TileType)randNumber);
-    }
-}
-
-void Dungeon::generateMapDrunkardWalk(RNGType& rngSeed,std::int16_t& numTiles)
-{
-	//number of empty nodes wanted
-	int limitOfEmptyNodes = ((numTiles * 4) / 5) ; //number of empty nodes is 4/5 the number of tiles 
-	int countOfEmptyNodes = 0;
-
-	
-	//pick a random point on grid
-
-	 //set probablity for each number
-	double probabilitiesNumber[] = { 0.2, 0.2, 0.2, 0.2, 0.2 }; // probabilites for 0,1,2,3,4 
-	//setup rng with set probablities    
-	boost::random::discrete_distribution <int> dist(probabilitiesNumber);
-	boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > Die(rngSeed,dist);
-
-    size_t xStartCol,yStartRow;
-    
-    //assign random number to xstartcol and ystartrow
-    xStartCol = Die();
-    yStartRow = Die();
-    
-    //bounds check
-    if(xStartCol >= numXNodeColumns){xStartCol = numXNodeColumns - 1;}
-    if(yStartRow >= numYNodeRows){yStartRow = numYNodeRows - 1;}
-    
-    //set random tile as empty
-    DungeonTile* randStartTile = dungeon_tile_look_up [xStartCol] [yStartRow];
-    randStartTile->setTileEmpty();
-    //increment count of empty nodes
-    countOfEmptyNodes++;
-
-    //Move to another point 1 space away from current empty tile
-    // Direction determined randomly
-    //Repeat
-    
-    //integer for cardinal directions
-	int direction;
-
-	//set probability for cardinal direction
-	double probabilitiesDirection[] = { 0.2, 0.2, 0.2, 0.2 }; // probabilites for N,E,W,S
-	//setup rng with set probablities    
-	boost::random::discrete_distribution <int> distDirection(probabilitiesDirection);
-	boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > DirectionDie(rngSeed,distDirection);
-
-    size_t xCol = xStartCol;
-    size_t yRow = yStartRow;
-
-	//do this until limit of empty nodes is reached
-	while(countOfEmptyNodes < limitOfEmptyNodes)
-	{	
-		//choose a cardinal direction randomly
-		direction = DirectionDie();
-		
-		// NEWS = 0123
-
-        //Out of bounds prevention
-		//if node location is on bounds
-		if(xCol == 0){ direction = 1;} // if on 0, go east
-		else if(xCol == numXNodeColumns - 1){direction = 2;} // if on map_width, go west
-		if(yRow == 0){direction = 3;} //if on 0, go south
-		else if(yRow == numYNodeRows - 1){direction = 0;} //if on map_height, go north
-		
-		//increment or decrement x or y based on direction
-		switch(direction)
-		{
-			//go north		
-			case 0:{ yRow -= 1; break;}
-			//go east
-			case 1:{xCol += 1; break;}
-			//go west
-			case 2:{xCol -= 1; break;}
-			//go south
-			case 3:{yRow += 1;break;}
-		}
-
-        if(xCol >= numXNodeColumns){xCol = numXNodeColumns - 1;}
-        if(yRow >= numYNodeRows){yRow = numYNodeRows - 1;}
-
-        //if tile is not empty
-        if( !dungeon_tile_look_up [xCol] [yRow]->getTypeEmpty() )
-        {
-            //set it as empty
-            dungeon_tile_look_up [xCol] [yRow]->setTileEmpty();
-            //increment count of empty nodes
-            countOfEmptyNodes += 1;
-        }
-	}
-}
-
-void Dungeon::setTileTypesRandom(RNGType& rngSeed)
-{
-	 //set probablity for each number
-	double probabilitiesNumber[] = { 0.2, 0.2, 0.2 }; // probabilites for 0,1,2 
-	//setup rng with set probablities    
-	boost::random::discrete_distribution <int> dist(probabilitiesNumber);
-	boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > Die(rngSeed,dist);
-    
-    //variable for random number
-	int randNumber = 0;
-
-	for(size_t i=0; i < dungeonTileSet.size(); ++i)
-	{
-		//if tile is empty
-		if( dungeonTileSet[i]->getTypeEmpty())
-		{
-            randNumber = Die();
-            dungeonTileSet[i]->setType((DungeonTile::TileType)randNumber);
-		}
-		//if tile is not empty
-		else{dungeonTileSet[i]->setType(DungeonTile::TileType::CENTER);}
-	}
-}
-
-
-void Dungeon::genRuleWall(RNGType& rngData, boost::random::uniform_int_distribution <> zero2twelve)
-{
-    //std::cout << "genRuleWall called! \n";
-    int randNumber = 0;
-
-     //tile type
-    DungeonTile::TileType tileType;
-
-    for(size_t i=0; i < dungeonTileSet.size(); ++i)
-    {
-        //if tile is a wall or hole
-        if( dungeonTileSet[i]->getTypeWall() || 
-            dungeonTileSet[i]->getType() == DungeonTile::TileType::CENTER)
-        {
-            //generate random number
-            boost::random::variate_generator <RNGType&,boost::random::uniform_int_distribution <> > Die_12(rngData, zero2twelve);
-            randNumber = Die_12();
-
-            //turn into a floor tile if randNumber is less than 8
-            if(randNumber <= 8 )
-            {
-                if(randNumber <= 2)
-                {
-                    tileType = DungeonTile::TileType::RED;
-                }
-                else if( randNumber >=3 && randNumber <= 5)
-                {
-                    tileType = DungeonTile::TileType::BLUE;
-                }
-                else
-                {
-                    tileType = DungeonTile::TileType::GREEN;
-                }
-            }
-
-            //else change it to a tile center
-            else
-            {
-                tileType = DungeonTile::TileType::CENTER;
-            }
-
-            dungeonTileSet[i]->setType(tileType);
-
-        }
-    }
-}
-
-void Dungeon::genRuleLimitExits(int exitMax,int exitMin,RNGType& rngData, boost::random::uniform_int_distribution <> zero2twelve)
-{
-    //std::cout << "genRuleLimitExits called! \n";
-    //change exit tiles into wall tiles
-    //  std::cout << "Exit tile rules called in main! \n";
-    int randNumber = 0;
-    //initialize number of exits
-    int numberExits=0;
-
-    //exit limit
-    int exitLimit = zero2twelve( rngData);
-
-    if(exitLimit >= exitMax ){exitLimit = exitMax;}
-    else if( exitLimit <= exitMin){exitLimit = exitMin;}
-    //std::cout << "Exit Limit:" << exitLimit  << std::endl;
-
-    //set which exit tiles are allowed to be exit tiles
-    for(size_t i = 0; i < dungeonTileSet.size(); ++i)
-    {
-        //generate random numbers
-        boost::random::variate_generator <RNGType&,boost::random::uniform_int_distribution <> > Die_12(rngData, zero2twelve);
-        randNumber = Die_12();
-
-        //check if exit tile
-        if( dungeonTileSet[i]->getTypeExit() == true )
-        {
-              dungeonTileSet[i]->genRuleAllowExit(randNumber);
-            if(dungeonTileSet[i]->exitAllowed == true)
-            {
-                    numberExits += 1;
-            }
-            //stp loop if
-            if( numberExits == exitLimit)
-            {
-                break;
-            }
-
-        }
-
-    }
-
-    //change exit tiles not allowed to wall tiles
-    for(size_t i=0; i < dungeonTileSet.size(); ++i)
-    {
-        dungeonTileSet[i]->genRuleChangeExitTile();
-    }
-
-}
-
-void Dungeon::countNumberOfExits()
-{
-    int exitTiles = 0;
-
-    for(size_t i=0; i < dungeonTileSet.size(); ++i)
-    {
-        if( dungeonTileSet[i]->getTypeExit() == true )
-        {
-            exitTiles += 1;
-        }
-    }
-
-    //assign exitTiles to numberOfExits member
-    numberOfExits = exitTiles;
-}
-
-int Dungeon::getNumberOfExits(){return numberOfExits;}
 
 void Dungeon::setTiles()
 {
@@ -454,246 +228,6 @@ void Dungeon::moveMainDot(float& timeStep)
 
 /** Item Functions**/
 
-
-void Dungeon::placeKeyRandom(RNGType& rngData)
-{
-    /*
-    //initialize random number
-    int randomNumber = 0;
-
-    //check for a wall tile
-    for(size_t i=0; i < dungeonTileSet.size(); ++i)
-    {
-        if( dungeonTileSet[i]->getTypeFloor() == true )
-        {
-            //generate random number
-            boost::random::variate_generator <RNGType&,boost::random::uniform_int_distribution <> > Die_12(rngData, zero2twelve);
-            randomNumber = Die_12();
-
-            //if randomNumber is between 5 and 8
-            if(randomNumber == 12)
-            {
-
-                dungeonKey->setKeyPosition( dungeonTileSet[i]->getBox().x , dungeonTileSet[i]->getBox().y );
-                std::cout << "key x:" << dungeonKey->getCollisionBox().x
-                << "key y:" << dungeonKey->getCollisionBox().y << std::endl;
-
-                break;
-            }
-        }
-    }
-    */
-
-}
-
-void Dungeon::placeKeyRandomVector(RNGType& rngData)
-{
-    std::cout << "PlaceKeyRandomVector called! \n";
-
-    boost::random::uniform_int_distribution <int> zero2twelve( 0, 12 );
-    
-    //initialize random number
-    int randomNumber = 0;
-
-    //initialize count
-    int count = 0;
-
-    //element that is on end of vector
-    int endElement = (int)(dungeonKeys.size() );
-    std::cout << endElement;
-
-    //inititalize total tiles for boundschecking
-    int totalTiles = (int)dungeonTileSet.size();
-    
-    
-    while( count < endElement )
-        {
-             //generate random number
-            boost::random::variate_generator <RNGType&,boost::random::uniform_int_distribution <> > Die_12(rngData, zero2twelve);
-            randomNumber = Die_12();
-
-            std::cout << "randomNumber:" << randomNumber << std::endl;
-
-            //make randomNumber 1 if it is equal to zero to avoid keys placed in 0,0
-            if(randomNumber < 1){ randomNumber = 1;}
-
-            //assign random values to x and y position
-            int x = randomNumber * 80;
-            int y = (randomNumber + randomNumber - 2) * 40 ;
-
-            std::cout << "x:"<< x << "y:" << y << std::endl;
-
-            //assign tile number returned to element
-            int element = (Dungeon::getTileNumberFromPosition(x,y) );
-
-            int elementLeft = element - 1;
-            int elementRight = element + 1;
-            int elementDown = element + 16;
-
-            //bounds check
-            if( elementDown >= totalTiles)
-            {
-                std::cout << "Warning element Down is out of bounds! \n";
-                element = 1;
-                elementLeft = 0;
-                elementRight = 2;
-                elementDown = 17;
-            }
-            
-            //if tile element is a floor tile and below,left,right of it are floor tiles
-            if( dungeonTileSet[element]->getTypeFloor() == true
-                && dungeonTileSet[elementLeft]->getTypeFloor() == true
-                && dungeonTileSet[elementRight]->getTypeFloor() == true
-                && dungeonTileSet[elementDown]->getTypeFloor() == true )
-            {
-                //place key there
-                dungeonKeys[count]->setKeyPosition(x,y);
-
-                std::cout << "key" << count << " x:" <<
-                dungeonKeys[count]->getCollisionBox().x
-                << " y:" << dungeonKeys[count]->getCollisionBox().y << std::endl;
-
-                //increment count
-                count += 1;
-            }
-
-        }
-
-}
-
-
-void Dungeon::placeDungeonDoors(RNGType& rngSeed)
-{
-    //std::cout << "placeDungeonDoors called in Dungeon Node! \n";
-    
-    if( dungeonDoors.size() == 0)
-    {
-        Dungeon::placeThisOneDungeonDoor(rngSeed,dungeonDoors[0]);    
-    }
-
-    else
-    {
-        for(size_t i = 0; i < dungeonDoors.size(); ++i)
-        {
-            Dungeon::placeThisOneDungeonDoor(rngSeed,dungeonDoors[i]);
-        }
-    }
-}
-
-void Dungeon::placeEnemies(std::vector <Enemy*> &enemy_vector, 
-                                size_t& startIterator, size_t& endIterator,
-                                RNGType& rngSeed)
-{
-    if( enemy_vector.size() == 0)
-    {
-        Dungeon::placeThisOneEnemy(rngSeed,enemy_vector[0]);    
-    }
-
-    else
-    {
-        for(size_t i = startIterator; i < endIterator; ++i)
-        {
-            Dungeon::placeThisOneEnemy(rngSeed,enemy_vector[i]);
-        }
-    }
-}
-
-void Dungeon::placeThisOneDungeonDoor(RNGType& rngSeed,Door* thisDoor)
-{
-     //set probablity for each number
-	double probabilitiesNumber[] = { 0.0, 0.2, 0.2, 0.2, 0.2, 0.2 }; // probabilites for 0,1,2,3,4,5 
-	//setup rng with set probablities    
-	boost::random::discrete_distribution <int> dist(probabilitiesNumber);
-	boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > Die(rngSeed,dist);
-
-    size_t xCol,yRow;
-    
-    bool door1Placed = false;
-    bool door2Placed = false;
-    bool bothDoorsPlaced = false;
-    
-    std::int8_t randNumber = 0;
-    
-    size_t xEndCol = numXNodeColumns - 1;
-    size_t yEndRow = numYNodeRows - 1;
-    
-    //bounds for area door should be placed in
-    size_t xEdge = numXNodeColumns - 3;
-    size_t yEdge = numYNodeRows - 3;
-
-    while(!bothDoorsPlaced)
-    {
-        randNumber = Die();
-        //assign random number to xcol and yrow
-        if(randNumber >= 0 && randNumber <= 2)
-        {
-            xCol = numXNodeColumns - Die();
-            yRow = numYNodeRows - Die(); 
-        }
-        else
-        {
-            xCol = Die();
-            yRow = Die(); 
-        }
-        
-        
-        //bounds check
-        //avoid putting doors in outer edges of node
-        if(xCol >= xEdge){xCol = xEdge;}
-        if(yRow >= yEdge){yRow = yEdge;}
-   
-        //if door 1 is not placed yet and dungeon tile is a floor tile
-        if( !door1Placed && dungeon_tile_look_up [xCol][yRow]->getTypeFloor() )
-        {
-        
-             //place the door on tile if no door to right of tile
-             // and to left of tile
-            if(dungeon_tile_look_up [xCol + 1][yRow]->getType() 
-                != DungeonTile::TileType::DOOR
-                && dungeon_tile_look_up [xCol - 1][yRow]->getType() 
-                != DungeonTile::TileType::DOOR)
-            {
-                //place door  1 on floor tile
-                std::int16_t xPos = dungeon_tile_look_up [xCol][yRow]->getBox().x;
-                std::int16_t yPos = dungeon_tile_look_up [xCol][yRow]->getBox().y;
-                thisDoor->placeDoor1( xPos,yPos);
-                door1Placed = true;
-                //set tile door is on as door tile type
-                dungeon_tile_look_up [xCol][yRow]->setType(DungeonTile::TileType::DOOR);
-        
-                Dungeon::setTilesAroundCenterToFloor(xCol,yRow,xEndCol,yEndRow);
-                  
-            }
-             
-        }
-        else
-        {
-            //if door 2 isn't placed and tile is floor tile
-            if(!door2Placed && dungeon_tile_look_up [xCol][yRow]->getTypeFloor())
-            {
-               //place door 2 on floor tile
-                std::int16_t xPos = dungeon_tile_look_up [xCol][yRow]->getBox().x;
-                std::int16_t yPos = dungeon_tile_look_up [xCol][yRow]->getBox().y;
-                
-                 
-                 //place the door on tile if no door to right of tile
-                if(dungeon_tile_look_up [xCol + 1][yRow]->getType() != DungeonTile::TileType::DOOR
-                    && dungeon_tile_look_up [xCol - 1][yRow]->getType() != DungeonTile::TileType::DOOR)
-                {
-                    thisDoor->placeDoor2( xPos,yPos);
-                    door2Placed = true;
-                    //set tile door is on as door tile type
-                    dungeon_tile_look_up [xCol][yRow]->setType(DungeonTile::TileType::DOOR);
-                    
-                    Dungeon::setTilesAroundCenterToFloor(xCol,yRow,xEndCol,yEndRow);
-                    
-                    //set both doors placed as true
-                    bothDoorsPlaced = true;
-                } 
-            }
-        }
-    }
-}
 
 void Dungeon::setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow)
 {
@@ -777,172 +311,13 @@ void Dungeon::setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEnd
     }
 }
 
-//function to setup door object allocated in heap memory from door class
-void setupNewDoorObject(Door** thisDoor,
-                            LTexture* doorTexture,
-                            ALuint* source,
-                            ALuint* doorBufferOpen, 
-                            ALuint* doorBufferFail,
-                            std::vector <SDL_Rect> *ptrDoorClips);
-                            
-//function to setup key object allocated in heap memory from key class                            
-void setupNewKeyObject(Key** thisKey,LTexture* keyTexture,ALuint* source,ALuint* buffer);
-
-void Dungeon::setupDoorsAndKeys(std::int8_t& numDoors,
-                                    std::int8_t& numKeys,
-                                LTexture& keyTexture,
-                                ALuint& keySource,
-                                ALuint& keyBuffer,
-                                LTexture& doorTexture,
-                                ALuint& doorSource,
-                                ALuint& doorBufferOpen,
-                                ALuint& doorBufferFail,
-                                std::vector <SDL_Rect> *doorClips)
-{
-   
-    
-    //std::cout<< "setupDoorsAndKeys called! \n";
-
-    dungeonKeys.resize(numKeys);
-    dungeonDoors.resize(numDoors);
-    
-    //std::cout << "Keys:" << dungeonKeys.size() << "Doors:" << dungeonDoors.size() << std::endl ;
-    
-    
-    //setup keys
-    for(size_t i=0; i < dungeonKeys.size(); ++i )
-    {
-        
-        
-        setupNewKeyObject(&dungeonKeys[i], &keyTexture,&keySource,&keyBuffer);
-    }
-    
-   //setup doors
-    for(size_t i=0; i < dungeonDoors.size(); ++i)
-    {
-        
-        setupNewDoorObject(&dungeonDoors[i],
-                            &doorTexture,
-                            &doorSource,
-                            &doorBufferOpen, 
-                            &doorBufferFail,
-                            doorClips);
-    }
-}
-
-void Dungeon::freeDoorsAndKeys()
-{
-    std::cout << "freeDoorsAndKeys called! \n";
-
-    //free keys
-    if( dungeonKeys.size() == 0 )
-    {
-        delete dungeonKeys[0];
-    }
-    else
-    {
-        for(size_t i=0; i < dungeonKeys.size(); ++i )
-        {
-            delete dungeonKeys[i];
-        }
-    }
-
-    //free doors
-    if( dungeonDoors.size() == 0 )
-    {
-            delete dungeonDoors[0];
-    }
-
-    else
-    {
-        for(size_t i=0; i < dungeonDoors.size(); ++i )
-        {
-            delete dungeonDoors[i];
-        }
-    }
-}
 
 void Dungeon::checkKeyAndDot()
 {
-    if( dungeonKeys.size() == 0 )
-    {
-        //if dot collides with one of key objects
-        if( checkCollision( dungeonKeys[0]->getCollisionBox(), mainDotPointer->getCollisionBox() ) == true)
-        {
-            //key is picked up
-            dungeonKeys[0]->setKeyBool(true);
-        }
-    }
-
-    else
-    {
-        //for every key object
-        for(size_t i =0; i < dungeonKeys.size() ; ++i )
-        {
-            //if dot collides with one of key objects
-            if( checkCollision( dungeonKeys[i]->getCollisionBox(), mainDotPointer->getCollisionBox() ) == true)
-            {
-                //key is picked up
-                dungeonKeys[i]->setKeyBool(true);
-            }
-        }
-    }
-
 
 }
 
-//function to place 1 enemy in node
-void Dungeon::placeThisOneEnemy(RNGType& rngSeed,Enemy* thisEnemy)
-{
-      //set probablity for each number
-	double probabilitiesNumber[] = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 }; // probabilites for 0,1,2,3,4,5 
-	//setup rng with set probablities    
-	boost::random::discrete_distribution <int> dist(probabilitiesNumber);
-	boost::random::variate_generator <RNGType&, boost::random::discrete_distribution <> > Die(rngSeed,dist);
 
-    size_t xCol,yRow;
-    
-    size_t xEndCol = numXNodeColumns - 1;
-    size_t yEndRow = numYNodeRows - 1;
-    
-    bool placedOnFloor = false;
-    
-    std::int8_t randNumber = 0;
-    
-    while(!placedOnFloor)
-    {
-        randNumber = Die();
-        //assign random number to xcol and yrow
-        if(randNumber >= 0 && randNumber <= 2)
-        {
-            xCol = numXNodeColumns - Die();
-            yRow = numYNodeRows - Die(); 
-        }
-        else
-        {
-            xCol = Die();
-            yRow = Die(); 
-        }
-        
-        if(xCol <= xEndCol && yRow <= yEndRow)
-        {
-            if(dungeon_tile_look_up [xCol][yRow]->getTypeFloor())
-            {
-                //get tile position
-                float x = dungeon_tile_look_up [xCol][yRow]->getBox().x;
-                float y = dungeon_tile_look_up [xCol][yRow]->getBox().y;
-                
-                //place enemy on tile
-                thisEnemy->setPosX(x);
-                thisEnemy->setPosY(y);
-                //set tile as occupied
-                dungeon_tile_look_up [xCol][yRow]->setType(DungeonTile::TileType::OCCUPIED);
-                
-                placedOnFloor = true;
-            }
-        }
-    }
-}
 
 /** Game Loop Functions**/
 
@@ -968,9 +343,9 @@ void Dungeon::handle_events(Event& thisEvent)
     mainDotPointer->handleEvent(thisEvent);
 
 /*
-    for(size_t i=0; i < (*dungeonDoors).size(); ++i)
+    for(size_t i=0; i < (*dungeonDoorsVector).size(); ++i)
     {
-        (*dungeonDoors)[i]->handle_event(*event);
+        (*dungeonDoorsVector)[i]->handle_event(*event);
     }
 */
 }
@@ -987,7 +362,7 @@ void Dungeon::logic()
 
 
     //move dot back if collides with door
-    Dungeon::doorCollision(timeStep);
+    //Dungeon::doorCollision(timeStep);
 /*
      //check if main dot collides with any key while another key hasn't been picked making rest of keys disappear in render
     if(!keyDisappear)
@@ -1039,13 +414,13 @@ void Dungeon::exitByTile()
 
 void Dungeon::exitByDoor()
 {
-    for(size_t i=0; i < dungeonDoors.size(); ++i)
+    for(size_t i=0; i < dungeonDoorsVector.size(); ++i)
     {
 
         //run open door logic
-        dungeonDoors[i]->openDoorLogic();
+        dungeonDoorsVector[i].openDoorLogic();
 
-            if( dungeonDoors[i]->getDoorState() == Door::State::DOOR_OPEN)
+            if( dungeonDoorsVector[i].getDoorState() == Door::State::DOOR_OPEN)
             {
                 //go to next state
                 Dungeon::setState(GameState::State::NEXT);
@@ -1056,44 +431,23 @@ void Dungeon::exitByDoor()
 
 void Dungeon::checkWrongDoor()
 {
-    /*
-     //check if any of the doors have tried to been open with wrong key
-    for(size_t i=0; i < (*dungeonDoors).size(); ++i)
-    {
-        //check if dot collides with door
-        if( checkCollision(mainDotPointer->getSpaceBox() , (*dungeonDoors)[i]->getCollisionBox() ) )
-        {
-            //check if space was pressed on door and if door didn't open
-            if( (*dungeonDoors)[i]->getKeyInsertStatus() == true 
-                && (*dungeonDoors)[i]->getDoorOpenStatus() == false 
-                && keyDisappear == true )
-            {
-                std::cout << "Wrong Door! \n";
-                //set door attempt fail to true
-                //(*dungeonDoors)[i]->setDoorOpenAttemptFail(true);
-                (*dungeonDoors)[i]->setDoorState(Door::State::DOOR_OPEN_FAIL);
-            }
-            else{(*dungeonDoors)[i]->setDoorState(Door::State::DOOR_CLOSED);}
-        }
-        else{(*dungeonDoors)[i]->setDoorState(Door::State::DOOR_CLOSED);}
-    }
-     * */
+    
 }
 
 void Dungeon::doorCollision(float timeStep)
 {
     
-    if( dungeonDoors.size() == 0)
+    if( dungeonDoorsVector.size() == 0)
     {
         //if dot collides with door
         if( checkCollision( mainDotPointer->getCollisionBox(), 
-                        dungeonDoors[0]->getCollisionBoxDoor1()) )
+                        dungeonDoorsVector[0].getCollisionBoxDoor1()) )
         {
             //move dot back
             mainDotPointer->moveBack(timeStep);
         }
         else if(checkCollision( mainDotPointer->getCollisionBox(), 
-                        dungeonDoors[0]->getCollisionBoxDoor2()))
+                        dungeonDoorsVector[0].getCollisionBoxDoor2()))
         {
             //move dot back
             mainDotPointer->moveBack(timeStep);
@@ -1102,18 +456,18 @@ void Dungeon::doorCollision(float timeStep)
     }
     else
     {
-        for(size_t i=0;i < dungeonDoors.size(); ++i)
+        for(size_t i=0;i < dungeonDoorsVector.size(); ++i)
         {
             //if dot collides with a door
             if( checkCollision( mainDotPointer->getCollisionBox(), 
-                                dungeonDoors[i]->getCollisionBoxDoor1() ) )
+                                dungeonDoorsVector[i].getCollisionBoxDoor1() ) )
             {
 
                 //move dot back
                 mainDotPointer->moveBack(timeStep);
             }
             else if(checkCollision( mainDotPointer->getCollisionBox(), 
-                                dungeonDoors[i]->getCollisionBoxDoor2() ))
+                                dungeonDoorsVector[i].getCollisionBoxDoor2() ))
             {
                 //move dot back
                 mainDotPointer->moveBack(timeStep);
@@ -1129,8 +483,8 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
     
     //play dungeon music
     //play sound from dgmSource
-    alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
-    if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
+    //alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
+    //if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
 /*
     //play key sounds
     for(size_t i=0; i < (*dungeonKeys).size(); ++i)
@@ -1153,11 +507,11 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
 
 
     //play dungeon door sounds
-    for(size_t i=0; i < (*dungeonDoors).size(); ++i)
+    for(size_t i=0; i < (*dungeonDoorsVector).size(); ++i)
     {
         //play dungeon door sounds
-        (*dungeonDoors)[i]->playSounds();
-        //(*dungeonDoors)[i]->setDoorOpenAttemptFail(false);
+        (*dungeonDoorsVector)[i]->playSounds();
+        //(*dungeonDoorsVector)[i]->setDoorOpenAttemptFail(false);
     }
 */
 
@@ -1175,7 +529,7 @@ void Dungeon::render(SDL_Renderer* gRenderer)
     }
 
     //render dot
-    mainDotPointer->render(lCamera,gRenderer);
+    //mainDotPointer->render(lCamera,gRenderer);
 
 /*
     //render keys
@@ -1190,9 +544,9 @@ void Dungeon::render(SDL_Renderer* gRenderer)
 
 
     //render doors
-    for(size_t i=0; i < (*dungeonDoors).size(); ++i)
+    for(size_t i=0; i < (*dungeonDoorsVector).size(); ++i)
     {
-        (*dungeonDoors)[i]->render(lCamera,gRenderer);
+        (*dungeonDoorsVector)[i]->render(lCamera,gRenderer);
     }
 */
 
@@ -1265,126 +619,6 @@ void Dungeon::getXColYRowFromPosition(int x, int y,size_t& xCol, size_t& yRow)
      yRow = ( y - NODE_Y   ) / TILE_HEIGHT;
 }
 
-
-void Dungeon::setWallTopSide()
-{
-    for(size_t xCol = 0; xCol < numXNodeColumns; xCol++)
-    {
-        if(xCol == 0){dungeon_tile_look_up [xCol][0]->setType(DungeonTile::TileType::TOP_LEFT);}
-        else if(xCol == numXNodeColumns - 1){dungeon_tile_look_up [xCol][0]->setType(DungeonTile::TileType::TOP_RIGHT);}
-        else{dungeon_tile_look_up [xCol][0]->setType(DungeonTile::TileType::TOP);}
-    }
-}
-
-void Dungeon::setWallLeftSide()
-{
-    for(size_t yRow = 0; yRow < numYNodeRows; yRow++)
-    {
-        if(yRow == 0){dungeon_tile_look_up [0][yRow]->setType(DungeonTile::TileType::TOP_LEFT);}
-        else if(yRow == numYNodeRows - 1){dungeon_tile_look_up [0][yRow]->setType(DungeonTile::TileType::BOTTOM_LEFT);}
-        else{dungeon_tile_look_up [0][yRow]->setType(DungeonTile::TileType::LEFT);}
-    }
-}
-
-void Dungeon::setWallRightSide()
-{
-    for(size_t yRow = 0; yRow < numYNodeRows; yRow++)
-    {
-        if(yRow == 0){dungeon_tile_look_up [numXNodeColumns - 1][yRow]->setType(DungeonTile::TileType::TOP_RIGHT);}
-        else if(yRow == numYNodeRows - 1){dungeon_tile_look_up [numXNodeColumns - 1][yRow]->setType(DungeonTile::TileType::BOTTOM_RIGHT);}
-        else{dungeon_tile_look_up [numXNodeColumns - 1][yRow]->setType(DungeonTile::TileType::RIGHT);}
-    }
-}
-
-void Dungeon::setWallBottomSide()
-{
-    for(size_t xCol = 0; xCol < numXNodeColumns; xCol++)
-    {
-        if(xCol == 0){dungeon_tile_look_up [xCol][numYNodeRows - 1]->setType(DungeonTile::TileType::BOTTOM_LEFT);}
-        else if(xCol == numXNodeColumns - 1){dungeon_tile_look_up [xCol][numYNodeRows - 1]->setType(DungeonTile::TileType::BOTTOM_RIGHT);}
-        else{dungeon_tile_look_up [xCol][numYNodeRows - 1]->setType(DungeonTile::TileType::BOTTOM);}
-    }
-}
-
-void Dungeon::setTopWallOnThisRow(size_t& rowNum)
-{
-    //bounds checking
-    if(rowNum < numYNodeRows )
-    {
-        for(size_t xCol = 0; xCol < numXNodeColumns; xCol++)
-        {
-            if(xCol == 0){dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::TOP_LEFT);}
-            else if(xCol == numXNodeColumns - 1){dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::TOP_RIGHT);}
-            else{dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::TOP);}
-        }
-    }
-}
-
-void Dungeon::setLeftWallOnThisColumn(size_t& colNum)
-{
-    if(colNum < numXNodeColumns)
-    {
-        for(size_t yRow = 0; yRow < numYNodeRows; yRow++)
-        {
-            if(yRow == 0){dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::TOP_LEFT);}
-            else if(yRow == numYNodeRows - 1){dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::BOTTOM_LEFT);}
-            else{dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::LEFT);}
-        }
-    }
-    
-}
-
-void Dungeon::setRightWallOnThisColumn(size_t& colNum)
-{
-    if(colNum < numXNodeColumns )
-    {
-        for(size_t yRow = 0; yRow < numYNodeRows; yRow++)
-        {
-            if(yRow == 0){dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::TOP_RIGHT);}
-            else if(yRow == numYNodeRows - 1){dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::BOTTOM_RIGHT);}
-            else{dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::RIGHT);}
-        }
-    }
-    
-}
-
-void Dungeon::setBottomWallOnThisRow(size_t& rowNum)
-{
-    //bounds checking
-    if(rowNum < numYNodeRows )
-    {
-        for(size_t xCol = 0; xCol < numXNodeColumns; xCol++)
-        {
-            if(xCol == 0){dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::BOTTOM_LEFT);}
-            else if(xCol == numXNodeColumns - 1){dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::BOTTOM_RIGHT);}
-            else{dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::BOTTOM);}
-        }
-    }
-    
-}
-
-void Dungeon::setInvisibleWallOnThisRow(size_t& rowNum)
-{
-    if(rowNum < numYNodeRows)
-    {
-        for(size_t xCol = 0; xCol < numXNodeColumns - 1; xCol++)
-        {
-            dungeon_tile_look_up [xCol][rowNum]->setType(DungeonTile::TileType::INVISIBLE_WALL);
-        }
-    }
-}
-
-void Dungeon::setInvisibleWallOnThisColumn(size_t& colNum)
-{
-    if(colNum < numXNodeColumns)
-    {
-        for(size_t yRow = 0; yRow < numYNodeRows - 1; yRow++)
-        {
-            dungeon_tile_look_up [colNum][yRow]->setType(DungeonTile::TileType::INVISIBLE_WALL);
-        }
-    }
-    
-}
 
 void Dungeon::freeResources()
 {

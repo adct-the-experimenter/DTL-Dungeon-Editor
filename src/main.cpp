@@ -227,7 +227,7 @@ void DungeonGameLoop()
     
     baseGameState->logic(); //run logic module
     
-    gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
+    //gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
     playerHealthBar.updateHealthBar(mainPlayer->getHealthAddress()); //update player health
     
     //play audio
@@ -243,7 +243,7 @@ void DungeonGameLoop()
     //render fps
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);
     //render health bar
-    playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
+    //playerHealthBar.render(SCREEN_WIDTH,SCREEN_Y_START,gRenderer);
     //render sub map
     
     //update screen
@@ -341,8 +341,12 @@ void Dungeon1()
 	//setup camera for editor
 	SetupCamera();
 	
-    //if setup labyrinth was successful
-   
+    //generate an empty dungeon
+    dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
+    dungeonUPtr->setPointerToTimer(&stepTimer);
+    
+    dungeonUPtr->GenerateEmptyDungeon();
+    
 		   
 	/** GameLoop **/
 	//set base game state to gDungeon1
@@ -713,6 +717,11 @@ bool initOpenALSoft()
 bool loadMedia()
 {
 	
+	if(!loadDungeon_Door_Key_Media(gRenderer))
+	{
+		printf("Failed to load dugneon media! \n");
+		return false;
+	}
     //load main player media
     if(!setup_loadPlayerMedia(mainPlayer,gRenderer) )
     {
@@ -763,6 +772,7 @@ void close()
     
     //freeEnemyMedia();
     //freeWeaponsMedia();
+    freeDungeon_Door_Key_Media();
     
     //close OpenAL Soft
     cleanup_openALSoft();

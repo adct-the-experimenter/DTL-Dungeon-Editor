@@ -3,7 +3,7 @@
 
 bool loadDungeon_Door_Key_Media(SDL_Renderer* gRenderer)
 {
-    if(!setupLoad_LabyrinthMedia(gRenderer))
+    if(!setupLoad_DungeonMedia(gRenderer))
     {
         return false;
     }
@@ -24,7 +24,7 @@ bool loadDungeon_Door_Key_Media(SDL_Renderer* gRenderer)
 void freeDungeon_Door_Key_Media()
 {
     //free dungeon media
-    freeLabyrinthMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
+    freeDungeonMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
     freeDoorMedia(&doorTexture,&doorSource,&doorBufferOpen,&doorBufferFail);
     freeKeyMedia(&keyTexture,&keySource,&keyBuffer);
 }
@@ -32,11 +32,11 @@ void freeDungeon_Door_Key_Media()
 ALuint dungeonMusicSource;
 ALuint dungeonMusicBuffer;
 LTexture dungeonTilesTexture;
-bool setupLoad_LabyrinthMedia(SDL_Renderer* gRenderer)
+bool setupLoad_DungeonMedia(SDL_Renderer* gRenderer)
 {
     
     //load dungeon media
-    if(!loadLabyrinthMedia(gRenderer,&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer) )
+    if(!loadDungeonMedia(gRenderer,&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer) )
     {
         printf("Failed to load dungeon media! \n");
         return false;

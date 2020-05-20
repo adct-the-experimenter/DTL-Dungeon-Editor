@@ -106,5 +106,9 @@ void GameInventory::passWeaponToPlayerInventory(Weapon* thisWeapon)
 
 void GameInventory::freeWeapons()
 {
-    delete weaponsArray[0];
+	if(weaponsArray[0] != nullptr)
+	{
+		delete weaponsArray[0];
+	}
+    
 }

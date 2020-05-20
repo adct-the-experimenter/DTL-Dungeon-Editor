@@ -34,9 +34,11 @@ public:
    
     
     //function to load dungeon media outside of Dungeon object
-    friend bool loadLabyrinthMedia(SDL_Renderer* gRenderer,LTexture* tileMap,ALuint* source,ALuint* buffer);
+    friend bool loadDungeonMedia(SDL_Renderer* gRenderer,LTexture* tileMap,ALuint* source,ALuint* buffer);
     //function to free dungeon media outside of Dungeon object
-    friend void freeLabyrinthMedia();
+    friend void freeDungeonMedia();
+    
+    void GenerateEmptyDungeon();
     
     void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
     
@@ -52,20 +54,7 @@ public:
                           std::int16_t &tileWidth, std::int16_t &tileHeight,
                           std::int16_t& numTiles);
 
-    //randomly generate tiles in dungeon
-    void randomGeneration(RNGType& rngData, boost::random::uniform_int_distribution <> zero2twelve);
-	void generateMapDrunkardWalk(RNGType& rngSeed,std::int16_t& numTiles);
-	void setTileTypesRandom(RNGType& rngSeed);
-
-    //random generation rules
-
-    //function to decrease floor walls in map
-    void genRuleWall(RNGType& rngData, boost::random::uniform_int_distribution <> zero2twelve);
-
-
-    //limit number of exit tiles to a certain number. change exits not allowed into wall tiles
-    void genRuleLimitExits(int exitMax,int exitMin, RNGType& rngData, boost::random::uniform_int_distribution <> zero2twelve);
-
+    
 //set image clips for tiles
     // set tiles after finishing randomGeneration and its rules or loading tiles
     void setTiles();
@@ -83,18 +72,6 @@ public:
 
 /** Item Functions **/
 
-    //setup vector for keys and doors
-    void setupDoorsAndKeys(std::int8_t& numDoors,
-                            std::int8_t& numKeys,
-                            LTexture& keyTexture,
-                            ALuint& keySource,
-                            ALuint& keyBuffer,
-                            LTexture& doorTexture,
-                            ALuint& doorSource,
-                            ALuint& doorOpenSound,
-                            ALuint& doorFailSound,
-                            std::vector <SDL_Rect> *doorClips                
-                            );
 
      //exit by opening a door
     void exitByDoor();
@@ -102,20 +79,10 @@ public:
     //checks if door was tried to be open with wrong key
     void checkWrongDoor();
 
-    //place key randomly on a wall tile
-    void placeKeyRandom(RNGType& rngData);
-
-    void placeKeyRandomVector(RNGType& rngData);
-
-    //place doors at floor tiles
-    void placeDungeonDoors(RNGType& rngSeed);
 
     //delete door and key objects
     void freeDoorsAndKeys();
     
-    void placeEnemies(std::vector <Enemy*> &enemy_vector,
-                        size_t& startIterator, size_t& endIterator,
-                        RNGType& rngSeed);
 
     //logic
 
@@ -149,26 +116,7 @@ public:
 
     SDL_Rect getTileBox_under_dot();
 
-    void countNumberOfExits();
-
-    int getNumberOfExits();
     
-    //functions to set walls on sides of labyrinth node
-    void setWallTopSide();
-    void setWallLeftSide();
-    void setWallRightSide();
-    void setWallBottomSide();
-    
-    //function to set certain kinds of wall in a certain row or column
-    void setTopWallOnThisRow(size_t& rowNum);
-    void setLeftWallOnThisColumn(size_t& colNum);
-    void setRightWallOnThisColumn(size_t& colNum);
-    void setBottomWallOnThisRow(size_t& rowNum);
-    
-    //functions to set invisible walls 
-    //Use to give illusion that nodes are different dimensions
-    void setInvisibleWallOnThisRow(size_t& rowNum);
-    void setInvisibleWallOnThisColumn(size_t& colNum);
     
     
     void freeResources();
@@ -220,9 +168,7 @@ private:
     //function to return pointer to dungeon tile based on x position and y position
     DungeonTile* getDungeonTileFromPosition(int x, int y); 
     void getXColYRowFromPosition(int x, int y,size_t& xCol, size_t& yRow);
-    
-    int numberOfExits;
-
+   
 
 /** Beings in Dungeon**/
     //main character
@@ -231,26 +177,12 @@ private:
 
 /** Items in Dungeon **/
 
-    //vector of pointers to key objects
-    std::vector <Key*> dungeonKeys;
-    
-    //vector of pointers to door objects
-    std::vector <Door*> dungeonDoors;
     
     EnemyInventory m_enemy_inventory;
-	
-    bool keyDisappear;
-
-    //number of times all SFX can be looped
-    int loopSFX;
-
-    //function to place 1 dungeon door
-    void placeThisOneDungeonDoor(RNGType& rngSeed,Door* thisDoor);
     
     void setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow );
     
-    //function to place 1 enemy in node
-    void placeThisOneEnemy(RNGType& rngSeed,Enemy* thisEnemy);
+    std::vector <Door> dungeonDoorsVector;
     
 };
 
