@@ -4,6 +4,7 @@
 GameInventory::GameInventory()
 {
 	m_player_inventory_ptr = nullptr;
+	weaponsArray[0] = nullptr;
 }
 
 GameInventory::~GameInventory()

@@ -68,6 +68,8 @@ public:
                             SDL_Rect& camera);
                             
     void moveMainDot(float& timeStep);
+    
+    void PlaceDotInThisLocation(float& x, float& y);
 
 
 /** Item Functions **/
@@ -121,7 +123,7 @@ public:
     
     void freeResources();
     
-    friend class LabyrinthMap;
+    friend class DungeonMap;
 
 private:
 

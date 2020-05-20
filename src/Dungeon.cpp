@@ -157,7 +157,9 @@ void Dungeon::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
     {
         std::int16_t tileNumber = i;
         dungeonTileSet[i] = new DungeonTile(dTile_X,dTile_Y,tileWidth,tileHeight,tileNumber);
-
+		
+		dungeonTileSet[i]->setType(DungeonTile::TileType::GREEN);
+        
         dungeon_tile_look_up [xCol] [yRow] = dungeonTileSet[i];
         
         //move to next tile spot
@@ -224,6 +226,12 @@ void Dungeon::moveMainDot(float& timeStep)
     //Restart timer
     timer->start();
 
+}
+
+void Dungeon::PlaceDotInThisLocation(float& x, float& y)
+{
+	mainDotPointer->setPosX(x);
+    mainDotPointer->setPosY(y);
 }
 
 /** Item Functions**/
@@ -483,8 +491,8 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
     
     //play dungeon music
     //play sound from dgmSource
-    //alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
-    //if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
+    alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
+    if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
 /*
     //play key sounds
     for(size_t i=0; i < (*dungeonKeys).size(); ++i)
@@ -529,7 +537,7 @@ void Dungeon::render(SDL_Renderer* gRenderer)
     }
 
     //render dot
-    //mainDotPointer->render(lCamera,gRenderer);
+    mainDotPointer->render(lCamera,gRenderer);
 
 /*
     //render keys

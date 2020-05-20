@@ -35,8 +35,8 @@ std::int16_t SCREEN_Y_START = 0;
 std::int16_t SCREEN_WIDTH = 640;
 std::int16_t SCREEN_HEIGHT = 480;
 
-std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 2;
-std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 2;
+std::int16_t LEVEL_WIDTH = SCREEN_WIDTH * 10;
+std::int16_t LEVEL_HEIGHT = SCREEN_HEIGHT * 10;
 
 
 //The window we'll be rendering to
@@ -178,7 +178,7 @@ int main(int argc, char* args[])
         /**Push first state in stack **/
         //Start off by pushing function GameLoop pointer to the stack
 
-        state_stack.push(gDungeon1StateStructure); //push game title to stack
+        state_stack.push(LoadGameResourcesStateStructure); //push game title to stack
 
         while(!quitGame) //while state_stack is not empty, terminates if game_intro is popped off
         {
@@ -345,9 +345,19 @@ void Dungeon1()
     dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
     dungeonUPtr->setPointerToTimer(&stepTimer);
     
+    //dungeonUPtr->setPointerToMainPlayer(mainPlayer);
+    dungeonUPtr->setPointersToMedia(&dungeonTilesTexture,&dungeonMusicSource,&dungeonMusicBuffer);
+	//dungeonUPtr->SetPointerToGameInventory(gameInventory.get());
+	
+	dungeonUPtr->setDungeonCameraForDot(SCREEN_WIDTH,SCREEN_HEIGHT,camera);
+	
+	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
+    
     dungeonUPtr->GenerateEmptyDungeon();
     
-		   
+    float x = 320; float y = 240;
+    dungeonUPtr->PlaceDotInThisLocation(x,y);
+     
 	/** GameLoop **/
 	//set base game state to gDungeon1
 	baseGameState = dungeonUPtr.get();
@@ -719,7 +729,7 @@ bool loadMedia()
 	
 	if(!loadDungeon_Door_Key_Media(gRenderer))
 	{
-		printf("Failed to load dugneon media! \n");
+		printf("Failed to load dungeon media! \n");
 		return false;
 	}
     //load main player media
@@ -772,7 +782,7 @@ void close()
     
     //freeEnemyMedia();
     //freeWeaponsMedia();
-    freeDungeon_Door_Key_Media();
+    //freeDungeon_Door_Key_Media();
     
     //close OpenAL Soft
     cleanup_openALSoft();
