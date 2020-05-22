@@ -85,6 +85,17 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
             default:{pushEventInstance(Event::NONE); break;}
         }
     }
+    else if(sdl_event_ptr->type == SDL_MOUSEMOTION 
+			|| sdl_event_ptr->type == SDL_MOUSEBUTTONDOWN 
+			|| sdl_event_ptr->type == SDL_MOUSEBUTTONUP)
+    {
+		switch(sdl_event_ptr->type)
+		{
+			case SDL_MOUSEMOTION :{ pushEventInstance(Event::MOUSE_MOTION); break;}
+			case SDL_MOUSEBUTTONDOWN:{ pushEventInstance(Event::MOUSE_DOWN); break;}
+			case SDL_MOUSEBUTTONUP:{ pushEventInstance(Event::MOUSE_UP); break;}
+		}
+	}
     else{pushEventInstance(Event::NONE);}
 }
 

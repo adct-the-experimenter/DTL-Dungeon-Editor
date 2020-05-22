@@ -26,7 +26,9 @@
 #include "game_inventory.h" //for weapons and items in game world 
 #include "player_media_loader.h" //for loading media for player
 
+#include "DungeonCreator.h"
 #include "Dungeon.h"
+
 
 /** Constants and Global Variables**/
 
@@ -56,6 +58,9 @@ SDL_Color textColor = {96,96,96 };
 
 
 //Main Game
+
+//global pointer to dungeon creator
+DungeonCreator* gDungeonCreatorPtr = nullptr;
 
 //The camera
 SDL_Rect camera = { 0, 0, SCREEN_WIDTH , SCREEN_HEIGHT  };
@@ -213,9 +218,11 @@ void DungeonGameLoop()
     while( !isEventQueueEmpty() )
     {
         baseGameState->handle_events(getEventInstanceFront());
+        gDungeonCreatorPtr->handle_events(getEventInstanceFront());
         //pop element in front of event queue
         popEventInstanceFromFront();
     }
+    
     
     baseGameState->handle_events_RNG(rng);
     collisionHandler->run_collision_handler(); //run collision handler to update collision states
@@ -225,6 +232,7 @@ void DungeonGameLoop()
     
     //Logic
     
+    gDungeonCreatorPtr->logic();
     baseGameState->logic(); //run logic module
     
     //gameInventory->checkWeaponsOnGround_Collision(playerInventory.get()); //check if weapon is picked up from ground
@@ -292,10 +300,14 @@ void GameLoop()
 
 void Dungeon1()
 {
+	std::unique_ptr <DungeonCreator> dungeonCreatorUPtr(new DungeonCreator() );
+	gDungeonCreatorPtr = dungeonCreatorUPtr.get();
+    
     
 	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
 	
-    
+	dungeonCreatorUPtr->SetDungeonToEdit(dungeonUPtr.get());
+	
     std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
     if(!ptrToCollisionHandler){return;}
     else
@@ -338,8 +350,6 @@ void Dungeon1()
 	playerInventory->unequipWeaponFromPlayer();
 	collisionHandler->EmptyPlayerEquippedWeapon();
 
-	//setup camera for editor
-	SetupCamera();
 	
     //generate an empty dungeon
     dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
@@ -428,58 +438,6 @@ void Dungeon1()
 	
 }
 
-
-void SetupCamera()
-{
-    //Mouse offsets
-    int x = 0, y = 0;
-    
-    //Get mouse offsets
-    SDL_GetMouseState( &x, &y );
-    
-    //Move camera to the left if needed
-    if( x < globalTileWidth )
-    {
-        camera.x -= 20;
-    }
-    
-    //Move camera to the right if needed
-    if( x > SCREEN_WIDTH - globalTileWidth )
-    {
-        camera.x += 20;
-    }
-    
-    //Move camera up if needed
-    if( y < globalTileWidth )
-    {
-        camera.y -= 20;
-    }
-    
-    //Move camera down if needed
-    if( y > SCREEN_HEIGHT - globalTileWidth )
-    {
-        camera.y += 20;
-    }
-    
-     //Keep the camera in bounds.
-    if( camera.x < 0 )
-    {
-        camera.x = 0;    
-    }
-    if( camera.y < 0 )
-    {
-        camera.y = 0;    
-    }
-    if( camera.x > LEVEL_WIDTH - camera.w )
-    {
-        camera.x = LEVEL_WIDTH - camera.w;    
-    }
-    if( camera.y > LEVEL_HEIGHT - camera.h )
-    {
-        camera.y = LEVEL_HEIGHT - camera.h;    
-    } 
-    
-}
 
 void Transition()
 {

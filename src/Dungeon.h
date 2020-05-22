@@ -20,8 +20,7 @@
 
 class Dungeon : public GameState
 {
-    //friend bool checkCollision(SDL_Rect a, SDL_Rect b);
-   
+    
 public:
 
 
@@ -120,10 +119,9 @@ public:
 
     
     
-    
     void freeResources();
     
-    friend class DungeonMap;
+    friend class DungeonCreator;
 
 private:
 

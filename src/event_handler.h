@@ -22,9 +22,11 @@ enum class Event : std::int8_t {
         ENTER,
         //escape
         ESCAPE,
-        
+        //mouse
+        MOUSE_DOWN,MOUSE_UP,MOUSE_MOTION,
         //Various keys
         G,V,B,N,R,
+        
     //Quit
         QUIT_WINDOW
 };

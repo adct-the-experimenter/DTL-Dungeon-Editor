@@ -40,7 +40,7 @@ include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR}
 
 
 set(SOURCES src/main.cpp
-src/Dungeon.cpp src/DungeonMap.cpp
+src/Dungeon.cpp src/DungeonCreator.cpp
 src/collisionhandler.cpp
 src/audio_renderer.cpp
 src/enemy_inventory.cpp
