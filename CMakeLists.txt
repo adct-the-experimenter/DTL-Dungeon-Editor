@@ -25,22 +25,26 @@ pkg_check_modules(SDL2ttf REQUIRED SDL2_ttf)
 #Boost random generation
 set(BOOST_LIBS date_time system random)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-#find_package(Threads REQUIRED)
+
+#xerces XML parsing
+find_package(XercesC REQUIRED)
 
 
 #For the shared library:
-set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES})
+set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES} ${XercesC_LIBRARIES})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${SDL2ttf_INCLUDE_DIRS} )
+set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${SDL2ttf_INCLUDE_DIRS} ${XercesC_INCLUDE_DIRS})
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR})
 
 
 set(SOURCES src/main.cpp
-src/Dungeon.cpp src/DungeonCreator.cpp
+src/DungeonXMLCreator.cpp src/DungeonXMLHandler.cpp
+src/DungeonCreator.cpp
+src/Dungeon.cpp 
 src/collisionhandler.cpp
 src/audio_renderer.cpp
 src/enemy_inventory.cpp
