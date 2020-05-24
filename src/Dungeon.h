@@ -18,6 +18,7 @@
 #include "enemy_inventory.h"
 #include "player.h"
 
+
 class Dungeon : public GameState
 {
     
@@ -38,6 +39,7 @@ public:
     friend void freeDungeonMedia();
     
     void GenerateEmptyDungeon();
+    
     
     void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);
     
@@ -123,6 +125,7 @@ public:
     
     friend class DungeonCreator;
     friend class DungeonXMLCreator;
+    friend class DungeonXMLReader;
 
 private:
 

@@ -27,6 +27,7 @@
 #include "player_media_loader.h" //for loading media for player
 
 #include "DungeonXMLCreator.h"
+#include "DungeonXMLReader.h"
 #include "DungeonCreator.h"
 #include "Dungeon.h"
 
@@ -375,6 +376,9 @@ void Dungeon1()
 	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
     
     dungeonUPtr->GenerateEmptyDungeon();
+    
+    std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
+    dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
     
     float x = 320; float y = 240;
     dungeonUPtr->PlaceDotInThisLocation(x,y);

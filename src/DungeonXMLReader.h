@@ -20,14 +20,12 @@ public:
 
 	//destructor
 	~DungeonXMLReader();
+	
 
-	//function to pass vector of notes to DungeonXMLHandler object
-	void SetPointerToDungeon(Dungeon* thisDungeon);
-
+	//function to set tiles in Dungeon based on what is read from file
+	void SetDungeonTilesFromXML(std::string filepath,Dungeon* dungeon);
+	
 private:
-
-	//pointer to vector of notes
-	Dungeon* m_dungeonPtr;
 
 };
 

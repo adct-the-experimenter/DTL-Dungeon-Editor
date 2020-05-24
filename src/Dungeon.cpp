@@ -104,11 +104,11 @@ void Dungeon::GenerateEmptyDungeon()
     Dungeon::setTiles();
 }
 
- void Dungeon::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight)
- {
-     LEVEL_WIDTH = levelWidth;
-     LEVEL_HEIGHT = levelHeight;
- }
+void Dungeon::setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight)
+{
+ LEVEL_WIDTH = levelWidth;
+ LEVEL_HEIGHT = levelHeight;
+}
     
 void Dungeon::setPointerToMainDot(Dot* thisDot){mainDotPointer = thisDot;}
 void Dungeon::setPointerToTimer(LTimer* thisTimer){timer = thisTimer;}
@@ -179,7 +179,6 @@ void Dungeon::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
     }
 
 }
-
 
 void Dungeon::setTiles()
 {

@@ -31,12 +31,10 @@ void DungeonXMLCreator::CreateXMLFile(std::string xml_file_path)
     declarationNode.append_attribute("standalone") = "yes";
     
     // A valid XML doc must contain a single root node of any name
-    auto root = doc.append_child("DungeonXML Root");
+    auto root = doc.append_child("DungeonXMLRoot");
     
     //create tiles node
     pugi::xml_node tilesNode = root.append_child("Tiles");
-    
-   
     
     if(m_dungeonPtr)
     {
