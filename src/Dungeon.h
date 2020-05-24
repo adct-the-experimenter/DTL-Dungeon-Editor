@@ -122,6 +122,7 @@ public:
     void freeResources();
     
     friend class DungeonCreator;
+    friend class DungeonXMLCreator;
 
 private:
 

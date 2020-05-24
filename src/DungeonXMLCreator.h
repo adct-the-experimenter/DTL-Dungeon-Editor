@@ -3,6 +3,9 @@
 
 #include "Dungeon.h"
 
+#include <string>
+
+
 class DungeonXMLCreator
 {
 public:
@@ -10,10 +13,13 @@ public:
 	DungeonXMLCreator();
 	~DungeonXMLCreator();
 	
+	//set pointer to dungeon
 	void SetPointerToDungeon(Dungeon* thisDungeon);
 	
-	void CreateXMLFile();
-
+	//create xml file
+	void CreateXMLFile(std::string xml_file_path);
+	
+	
 private:
 	Dungeon* m_dungeonPtr;
 	

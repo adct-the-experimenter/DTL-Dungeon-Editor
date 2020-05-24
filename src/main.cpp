@@ -26,8 +26,10 @@
 #include "game_inventory.h" //for weapons and items in game world 
 #include "player_media_loader.h" //for loading media for player
 
+#include "DungeonXMLCreator.h"
 #include "DungeonCreator.h"
 #include "Dungeon.h"
+
 
 
 /** Constants and Global Variables**/
@@ -300,13 +302,22 @@ void GameLoop()
 
 void Dungeon1()
 {
+	
+	std::unique_ptr <DungeonXMLCreator> dungeonXMLCreatorUPtr(new DungeonXMLCreator() );
+	
+
 	std::unique_ptr <DungeonCreator> dungeonCreatorUPtr(new DungeonCreator() );
 	gDungeonCreatorPtr = dungeonCreatorUPtr.get();
     
     
 	std::unique_ptr <Dungeon> dungeonUPtr(new Dungeon() );
 	
+	
 	dungeonCreatorUPtr->SetDungeonToEdit(dungeonUPtr.get());
+	
+	std::string path = "./test-file.xml";
+	dungeonXMLCreatorUPtr->SetPointerToDungeon(dungeonUPtr.get());
+	
 	
     std::unique_ptr <CollisonHandler> ptrToCollisionHandler(new CollisonHandler());
     if(!ptrToCollisionHandler){return;}
@@ -376,7 +387,6 @@ void Dungeon1()
 	stepTimer.start();
 	frameRateCap.startFrameCount();
 	
-	
 	bool quit = false;
 	
 	while(!quit)
@@ -431,6 +441,8 @@ void Dungeon1()
 		
 		quitGame = true;
 	}
+	
+	//dungeonXMLCreatorUPtr->CreateXMLFile(path);
 
 	loop += 1;
 	std::cout << "Loop: " <<loop << std::endl;
