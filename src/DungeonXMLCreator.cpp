@@ -12,8 +12,16 @@ XERCES_CPP_NAMESPACE_USE
 
 DungeonXMLCreator::DungeonXMLCreator()
 {
+	m_dungeonPtr = nullptr;
 	
 }
+
+DungeonXMLCreator::~DungeonXMLCreator()
+{
+	
+}
+
+void DungeonXMLCreator::SetPointerToDungeon(Dungeon* thisDungeon){m_dungeonPtr = thisDungeon;}
 
 void DungeonXMLCreator::CreateXMLFile()
 {
@@ -31,25 +39,12 @@ void DungeonXMLCreator::CreateXMLFile()
 
 	DOMElement* rootElem = doc->getDocumentElement();
 
-	DOMElement* prodElem = doc->createElement(XMLString::transcode("product"));
+	DOMElement* prodElem = doc->createElement(XMLString::transcode("Tile"));
 	rootElem->appendChild(prodElem);
 
-	DOMText* prodDataVal = doc->createTextNode(XMLString::transcode("Xerces-C"));
+	DOMText* prodDataVal = doc->createTextNode(XMLString::transcode("Empty"));
 	prodElem->appendChild(prodDataVal);
 
-	DOMElement* catElem = doc->createElement(XMLString::transcode("category"));
-	rootElem->appendChild(catElem);
-
-	catElem->setAttribute(XMLString::transcode("idea"), XMLString::transcode("great") );
-
-	DOMText* catDataVal = doc->createTextNode(XMLString::transcode("XML Parsing Tools") );
-	catElem->appendChild(catDataVal);
-
-	DOMElement* devByElem = doc->createElement(XMLString::transcode("developedBy") );
-	rootElem->appendChild(devByElem);
-
-	DOMText* devByDataVal = doc->createTextNode(XMLString::transcode("Apache Software Foundation"));
-	devByElem->appendChild(devByDataVal);
 
 	doc->release();
 	
