@@ -93,26 +93,26 @@ void DungeonTile::setTileClips()
 
     //for graphic tiles, set door as a red tile in rendering
     switch(DungeonTile::getType())
-        {
-            case DungeonTile::TileType::RED:{ dTileClip = redTile; break;}
-            case DungeonTile::TileType::GREEN:{ dTileClip = greenTile; break;}
-            case DungeonTile::TileType::BLUE:{  dTileClip = blueTile; break;}
-            case DungeonTile::TileType::TOP_LEFT:{ dTileClip = topLeftTile; break;}
-            case DungeonTile::TileType::LEFT: { dTileClip = leftTile; break;}
-            case DungeonTile::TileType::BOTTOM_LEFT:{ dTileClip=bottomLeftTile; break;}
-            case DungeonTile::TileType::TOP:{ dTileClip = topTile; break;}
-            case DungeonTile::TileType::CENTER:{ dTileClip=centerHoleTile; break;}
-            case DungeonTile::TileType::BOTTOM:{ dTileClip=bottomTile; break;}
-            case DungeonTile::TileType::TOP_RIGHT:{ dTileClip=topRightTile; break;}
-            case DungeonTile::TileType::RIGHT: {dTileClip=rightTile; break;}
-            case DungeonTile::TileType::BOTTOM_RIGHT:{ dTileClip=bottomRightTile; break;}
-            case DungeonTile::TileType::EXIT:{ dTileClip=exitTile; break;}
-            case DungeonTile::TileType::DOOR:{ dTileClip = redTile; break;}
-            case DungeonTile::TileType::OCCUPIED:{dTileClip = redTile; break;}
-            case DungeonTile::TileType::INVISIBLE_WALL:{dTileClip = invisibleWallTile; break;}
-            default:{std::cout<< "Invalid number for tile type! \n";}
+	{
+		case DungeonTile::TileType::RED:{ dTileClip = redTile; break;}
+		case DungeonTile::TileType::GREEN:{ dTileClip = greenTile; break;}
+		case DungeonTile::TileType::BLUE:{  dTileClip = blueTile; break;}
+		case DungeonTile::TileType::TOP_LEFT:{ dTileClip = topLeftTile; break;}
+		case DungeonTile::TileType::LEFT: { dTileClip = leftTile; break;}
+		case DungeonTile::TileType::BOTTOM_LEFT:{ dTileClip=bottomLeftTile; break;}
+		case DungeonTile::TileType::TOP:{ dTileClip = topTile; break;}
+		case DungeonTile::TileType::CENTER:{ dTileClip=centerHoleTile; break;}
+		case DungeonTile::TileType::BOTTOM:{ dTileClip=bottomTile; break;}
+		case DungeonTile::TileType::TOP_RIGHT:{ dTileClip=topRightTile; break;}
+		case DungeonTile::TileType::RIGHT: {dTileClip=rightTile; break;}
+		case DungeonTile::TileType::BOTTOM_RIGHT:{ dTileClip=bottomRightTile; break;}
+		case DungeonTile::TileType::EXIT:{ dTileClip=exitTile; break;}
+		case DungeonTile::TileType::DOOR:{ dTileClip = redTile; break;}
+		case DungeonTile::TileType::OCCUPIED:{dTileClip = redTile; break;}
+		case DungeonTile::TileType::INVISIBLE_WALL:{dTileClip = invisibleWallTile; break;}
+		default:{std::cout<< "Invalid number for tile type! \n";}
 
-        }
+	}
 }
 
 void DungeonTile::setTileEmpty()

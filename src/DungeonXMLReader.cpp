@@ -2,6 +2,7 @@
 
 #include "pugixml.hpp"
 #include <iostream>
+#include <string>
 
 DungeonXMLReader::DungeonXMLReader()
 {
@@ -37,23 +38,24 @@ void DungeonXMLReader::SetDungeonTilesFromXML(std::string filepath, Dungeon* dun
 	//go through each tile type in tiles node
 	for (pugi::xml_node tileType = tileRoot.first_child(); tileType; tileType = tileType.next_sibling())
 	{	
-		DungeonTile::TileType type = DungeonTile::TileType::EMPTY;
+		DungeonTile::TileType type = DungeonTile::TileType::RED;
 		
-		//std::cout << tileType.first_child().name() << ": " << tileType.first_child().value() << std::endl;
+		std::string valString = tileType.first_child().value();
+		//std::cout << valString << std::endl;
 		
-		if(tileType.first_child().value() ==  "GREEN"){type = DungeonTile::TileType::GREEN; break;}
-		else if(tileType.first_child().value() ==  "BLUE"){ type = DungeonTile::TileType::BLUE; break;}
-		else if(tileType.first_child().value() ==  "RED"){ type = DungeonTile::TileType::RED; break;}
-		else if(tileType.first_child().value() ==  "TOP"){ type = DungeonTile::TileType::TOP; break;}
-		else if(tileType.first_child().value() ==  "TOP_LEFT"){ type = DungeonTile::TileType::TOP_LEFT; break;}
-		else if(tileType.first_child().value() ==  "TOP_RIGHT"){ type = DungeonTile::TileType::TOP_RIGHT; break;}
-		else if(tileType.first_child().value() ==  "LEFT"){ type = DungeonTile::TileType::LEFT; break;}
-		else if(tileType.first_child().value() ==  "CENTER"){ type = DungeonTile::TileType::CENTER; break;}
-		else if(tileType.first_child().value() ==  "RIGHT"){ type = DungeonTile::TileType::RIGHT; break;}
-		else if(tileType.first_child().value() ==  "BOTTOM_LEFT"){ type = DungeonTile::TileType::BOTTOM_LEFT; break;}
-		else if(tileType.first_child().value() ==  "BOTTOM"){ type = DungeonTile::TileType::BOTTOM; break;}
-		else if(tileType.first_child().value() ==  "BOTTOM_RIGHT"){ type = DungeonTile::TileType::BOTTOM_RIGHT; break;}
-		else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; break;}
+		if(valString ==  "GREEN"){type = DungeonTile::TileType::GREEN; }
+		else if(valString ==  "BLUE"){ type = DungeonTile::TileType::BLUE; }
+		else if(valString ==  "RED"){ type = DungeonTile::TileType::RED; }
+		else if(valString ==  "TOP"){ type = DungeonTile::TileType::TOP; }
+		else if(valString ==  "TOP_LEFT"){ type = DungeonTile::TileType::TOP_LEFT; }
+		else if(valString ==  "TOP_RIGHT"){ type = DungeonTile::TileType::TOP_RIGHT; }
+		else if(valString ==  "LEFT"){ type = DungeonTile::TileType::LEFT; }
+		else if(valString ==  "CENTER"){ type = DungeonTile::TileType::CENTER; }
+		else if(valString ==  "RIGHT"){ type = DungeonTile::TileType::RIGHT; }
+		else if(valString ==  "BOTTOM_LEFT"){ type = DungeonTile::TileType::BOTTOM_LEFT; }
+		else if(valString ==  "BOTTOM"){ type = DungeonTile::TileType::BOTTOM; }
+		else if(valString ==  "BOTTOM_RIGHT"){ type = DungeonTile::TileType::BOTTOM_RIGHT; }
+		//else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; }
 			
 		dungeon->dungeonTileSet[iterator]->setType(type);
 		

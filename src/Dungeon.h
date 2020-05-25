@@ -38,7 +38,11 @@ public:
     //function to free dungeon media outside of Dungeon object
     friend void freeDungeonMedia();
     
-    void GenerateEmptyDungeon();
+    //function to generate empty dungeon without tile clip set
+    void GenerateEmptyDungeonForXMLLoad();
+    
+    //function to generate plain base dungeon with tile clip set.
+    void GenerateBaseDungeon();
     
     
     void setLevelDimensions(std::int16_t& levelWidth, std::int16_t& levelHeight);

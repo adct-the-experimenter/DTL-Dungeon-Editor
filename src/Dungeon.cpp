@@ -83,7 +83,25 @@ Dungeon::~Dungeon()
 
 }
 
-void Dungeon::GenerateEmptyDungeon()
+void Dungeon::GenerateEmptyDungeonForXMLLoad()
+{
+	std::int16_t startX = 0;
+    std::int16_t startY = 0;
+    
+    std::int16_t numTiles = 0;
+    
+    std::int16_t tileWidth = globalTileWidth;
+    std::int16_t tileHeight = globalTileHeight;
+
+    //calculate number of tiles in dungeon
+    numTiles = (LEVEL_WIDTH / tileWidth) * (LEVEL_HEIGHT / tileHeight);
+    
+    Dungeon::createBlankTiles(startX,startY,
+                            tileWidth,tileHeight,
+                            numTiles);
+}
+
+void Dungeon::GenerateBaseDungeon()
 {
 	std::int16_t startX = 0;
     std::int16_t startY = 0;
@@ -158,7 +176,7 @@ void Dungeon::createBlankTiles(std::int16_t &start_x, std::int16_t& start_y,
         std::int16_t tileNumber = i;
         dungeonTileSet[i] = new DungeonTile(dTile_X,dTile_Y,tileWidth,tileHeight,tileNumber);
 		
-		dungeonTileSet[i]->setType(DungeonTile::TileType::GREEN);
+		//dungeonTileSet[i]->setType(DungeonTile::TileType::GREEN);
         
         dungeon_tile_look_up [xCol] [yRow] = dungeonTileSet[i];
         

@@ -375,7 +375,7 @@ void Dungeon1()
 	
 	dungeonUPtr->setLevelDimensions(LEVEL_WIDTH,LEVEL_HEIGHT);
     
-    dungeonUPtr->GenerateEmptyDungeon();
+    dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
     
     std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
     dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
