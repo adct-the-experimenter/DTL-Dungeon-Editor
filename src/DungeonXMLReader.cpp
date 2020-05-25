@@ -34,16 +34,31 @@ void DungeonXMLReader::SetDungeonTilesFromXML(std::string filepath, Dungeon* dun
 
 	int iterator = 0;
 	
-	//go thorugh each tile type in tiles node
+	//go through each tile type in tiles node
 	for (pugi::xml_node tileType = tileRoot.first_child(); tileType; tileType = tileType.next_sibling())
 	{	
-		std::cout << tileType.first_child().name() << ": " << tileType.first_child().value() << std::endl;	
+		DungeonTile::TileType type = DungeonTile::TileType::EMPTY;
+		
+		//std::cout << tileType.first_child().name() << ": " << tileType.first_child().value() << std::endl;
+		
+		if(tileType.first_child().value() ==  "GREEN"){type = DungeonTile::TileType::GREEN; break;}
+		else if(tileType.first_child().value() ==  "BLUE"){ type = DungeonTile::TileType::BLUE; break;}
+		else if(tileType.first_child().value() ==  "RED"){ type = DungeonTile::TileType::RED; break;}
+		else if(tileType.first_child().value() ==  "TOP"){ type = DungeonTile::TileType::TOP; break;}
+		else if(tileType.first_child().value() ==  "TOP_LEFT"){ type = DungeonTile::TileType::TOP_LEFT; break;}
+		else if(tileType.first_child().value() ==  "TOP_RIGHT"){ type = DungeonTile::TileType::TOP_RIGHT; break;}
+		else if(tileType.first_child().value() ==  "LEFT"){ type = DungeonTile::TileType::LEFT; break;}
+		else if(tileType.first_child().value() ==  "CENTER"){ type = DungeonTile::TileType::CENTER; break;}
+		else if(tileType.first_child().value() ==  "RIGHT"){ type = DungeonTile::TileType::RIGHT; break;}
+		else if(tileType.first_child().value() ==  "BOTTOM_LEFT"){ type = DungeonTile::TileType::BOTTOM_LEFT; break;}
+		else if(tileType.first_child().value() ==  "BOTTOM"){ type = DungeonTile::TileType::BOTTOM; break;}
+		else if(tileType.first_child().value() ==  "BOTTOM_RIGHT"){ type = DungeonTile::TileType::BOTTOM_RIGHT; break;}
+		else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; break;}
+			
+		dungeon->dungeonTileSet[iterator]->setType(type);
+		
+		iterator++;
 	}
-
-	/*
-	for(size_t i = 0; i < dungeon->dungeonTileSet.size(); i++)
-	{
-		dungeon->dungeonTileSet[i] = 
-	}
-	*/
+	
+	dungeon->setTiles();
 }
