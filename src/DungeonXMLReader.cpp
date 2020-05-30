@@ -32,8 +32,8 @@ void DungeonXMLReader::SetDungeonTilesFromXML(std::string filepath, Dungeon* dun
     }
     
     pugi::xml_node tileRoot = doc.child("DungeonXMLRoot").child("Tiles");
-
-	int iterator = 0;
+    
+    size_t iterator = 0;
 	
 	//go through each tile type in tiles node
 	for (pugi::xml_node tileType = tileRoot.first_child(); tileType; tileType = tileType.next_sibling())
@@ -55,11 +55,11 @@ void DungeonXMLReader::SetDungeonTilesFromXML(std::string filepath, Dungeon* dun
 		else if(valString ==  "BOTTOM_LEFT"){ type = DungeonTile::TileType::BOTTOM_LEFT; }
 		else if(valString ==  "BOTTOM"){ type = DungeonTile::TileType::BOTTOM; }
 		else if(valString ==  "BOTTOM_RIGHT"){ type = DungeonTile::TileType::BOTTOM_RIGHT; }
-		//else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; }
+		else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; }
 			
 		dungeon->dungeonTileSet[iterator]->setType(type);
 		
-		iterator++;
+		iterator++;		
 	}
 	
 	dungeon->setTiles();

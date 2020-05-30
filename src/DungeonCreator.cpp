@@ -43,7 +43,7 @@ void DungeonCreator::logic()
 	{
 		case DungeonCreatorState::PUT_TILE:
 		{
-			DungeonCreator::PutTile();
+			DungeonCreator::PutTile(DungeonTile::TileType::CENTER);
 		}
 	}
 	
@@ -53,7 +53,7 @@ void DungeonCreator::logic()
 	m_dungeonCreatorState = DungeonCreatorState::NONE;
 }
 
-void DungeonCreator::PutTile()
+void DungeonCreator::PutTile(DungeonTile::TileType type)
 {
 	std::cout << "Put tile called!\n";
 	std::cout << "mouseX: " << mouseX << " , mouseY: " << mouseY << std::endl;
@@ -67,6 +67,10 @@ void DungeonCreator::PutTile()
 		tileY = mouseY + ptrDungeonToEdit->lCamera.y;
 		
 		std::cout << "tileX: " << tileX << " , tileY: " << tileY << std::endl;
+		
+		DungeonTile* thisTile = ptrDungeonToEdit->getDungeonTileFromPosition(tileX,tileY);
+		thisTile->setType(type);
+		thisTile->setTileClips();
 	}
 }
 

@@ -19,7 +19,7 @@ public:
     
     void SetupCamera();
     
-    void PutTile();
+    void PutTile(DungeonTile::TileType type);
    
     //game loop function to be called from main
     void handle_events(Event& thisEvent);
