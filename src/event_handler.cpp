@@ -3,6 +3,8 @@
 std::queue <Event> event_instances_queue;
 SDL_Event sdl_event;
 
+char inputChar;
+
 //function to set event 
 void run_event_handler()
 {
@@ -14,7 +16,19 @@ void run_event_handler()
 
 void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 {
-    if(sdl_event_ptr->type == SDL_QUIT){pushEventInstance(Event::QUIT_WINDOW);}
+	//Special text input event
+	if( sdl_event_ptr->type == SDL_TEXTINPUT )
+	{
+		//Not copy or pasting
+		//if( !( SDL_GetModState() & KMOD_CTRL && ( sdl_event_ptr->text.text[ 0 ] == 'c' || sdl_event_ptr->text.text[ 0 ] == 'C' || sdl_event_ptr->text.text[ 0 ] == 'v' || sdl_event_ptr->text.text[ 0 ] == 'V' ) ) )
+		//{
+			std::cout << "text input called in eventhandler! \n";
+			//Assign character
+			pushEventInstance(Event::TEXT_IN);
+			inputChar = *sdl_event_ptr->text.text;
+		//}
+	}
+    else if(sdl_event_ptr->type == SDL_QUIT){pushEventInstance(Event::QUIT_WINDOW);}
     //If key was pressed
     else if(sdl_event_ptr->type == SDL_KEYDOWN && sdl_event_ptr->key.repeat == 0)
     {
@@ -40,6 +54,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
             case SDLK_b:{pushEventInstance(Event::B); break;}
             case SDLK_n:{pushEventInstance(Event::N); break;}
             case SDLK_r:{pushEventInstance(Event::R); break;}
+            case SDLK_SLASH:{pushEventInstance(Event::SLASH); break;}
+            case SDLK_BACKSPACE:{ pushEventInstance(Event::BACKSPACE); break;}
             default:{pushEventInstance(Event::NONE); break;}
         }
     }
@@ -61,6 +77,8 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
             case SDLK_d: {pushEventInstance(Event::RIGHT_ARROW_REPEAT); break;}
             
             case SDLK_SPACE:{ pushEventInstance(Event::SPACE_REPEAT); break;}
+            //Handle backspace
+			
             default:{pushEventInstance(Event::NONE); break;}
         }
     }
@@ -112,3 +130,5 @@ void clearEventsQueue()
     //swap with empty queue
     event_instances_queue.swap(empty_queue);
 }
+
+char getInputCharFromTextInputEvent(){return inputChar;}

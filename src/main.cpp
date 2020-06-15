@@ -163,7 +163,11 @@ std::unique_ptr <GameInventory> gameInventory;
 
 std::unique_ptr <PlayerInventory> playerInventory;
 
-
+//text input
+LTexture gPromptTextTexture;
+LTexture gInputTextTexture;
+std::string inputText;
+bool textInputMode = false;
 
 int main(int argc, char* args[])
 {
@@ -182,6 +186,11 @@ int main(int argc, char* args[])
 	{
         gDungeon1StateStructure.StatePointer = Dungeon1;
         LoadGameResourcesStateStructure.StatePointer = LoadGameResourcesState;
+        
+		//The current input text.
+		inputText = "Some Text";
+		gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor,gFont,gRenderer );
+        SDL_StartTextInput();
         
         /**Push first state in stack **/
         //Start off by pushing function GameLoop pointer to the stack
@@ -211,6 +220,9 @@ int main(int argc, char* args[])
 
 void DungeonGameLoop()
 {
+	//The rerender text flag
+	bool renderText = false;
+				
     //start cap timer
     frameRateCap.startCapTimer();
     
@@ -220,8 +232,35 @@ void DungeonGameLoop()
     //while event queue is not empty
     while( !isEventQueueEmpty() )
     {
-        baseGameState->handle_events(getEventInstanceFront());
-        gDungeonCreatorPtr->handle_events(getEventInstanceFront());
+		if(getEventInstanceFront() == Event::SLASH)
+		{
+			textInputMode = !textInputMode;
+		}
+		
+		if(!textInputMode)
+		{
+			baseGameState->handle_events(getEventInstanceFront());
+			gDungeonCreatorPtr->handle_events(getEventInstanceFront());
+		}
+        else
+        {
+			if(getEventInstanceFront() == Event::TEXT_IN)
+			{
+				std::cout << "text input called in main! \n";
+				//Append character
+				inputText += getInputCharFromTextInputEvent();
+				renderText = true;
+			}
+			
+			if(getEventInstanceFront() == Event::BACKSPACE && inputText.length() > 0 )
+			{
+				//lop off character
+				inputText.pop_back();
+				renderText = true;
+			}
+			
+		}
+       
         //pop element in front of event queue
         popEventInstanceFromFront();
     }
@@ -251,6 +290,27 @@ void DungeonGameLoop()
     //Render
     baseGameState->render(gRenderer);
     
+    //Rerender text if needed
+	if( renderText )
+	{
+		//Text is not empty
+		if( inputText != "" )
+		{
+			//Render new text
+			gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor,gFont,gRenderer );
+		}
+		//Text is empty
+		else
+		{
+			//Render space texture
+			gInputTextTexture.loadFromRenderedText( " ", textColor,gFont,gRenderer );
+		}
+	}
+	
+    //Render text textures
+	gPromptTextTexture.render( ( SCREEN_WIDTH - gPromptTextTexture.getWidth() ) / 2, 0,gRenderer );
+	gInputTextTexture.render( ( SCREEN_WIDTH - gInputTextTexture.getWidth() ) / 2, gPromptTextTexture.getHeight(),gRenderer );
+    
     //render fps
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);
     //render health bar
@@ -259,6 +319,9 @@ void DungeonGameLoop()
     
     //update screen
     SDL_RenderPresent(gRenderer);
+    
+    //Disable text input
+    SDL_StopTextInput();
     
     //count this frame
     frameRateCap.countFrame();

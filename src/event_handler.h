@@ -18,6 +18,8 @@ enum class Event : std::int8_t {
         UP_ARROW_RELEASE,LEFT_ARROW_RELEASE,DOWN_ARROW_RELEASE,RIGHT_ARROW_RELEASE,
         // space
         SPACE, SPACE_REPEAT, SPACE_RELEASE,
+        //Text input
+        BACKSPACE,SLASH,TEXT_IN,
         //Enter
         ENTER,
         //escape
@@ -53,5 +55,7 @@ void clearEventsQueue();
 void run_event_handler();
 //function to set events in queue
 void readAndSetEventQueue(SDL_Event* sdl_event_ptr);
+
+char getInputCharFromTextInputEvent();
 
 #endif
