@@ -56,6 +56,6 @@ void run_event_handler();
 //function to set events in queue
 void readAndSetEventQueue(SDL_Event* sdl_event_ptr);
 
-char getInputCharFromTextInputEvent();
+char* getInputCharFromTextInputEvent();
 
 #endif

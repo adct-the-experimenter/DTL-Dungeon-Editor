@@ -3,7 +3,13 @@
 std::queue <Event> event_instances_queue;
 SDL_Event sdl_event;
 
-char inputChar;
+char* inputChar;
+
+char *text;
+char *composition;
+Sint32 cursor;
+Sint32 selection_len;
+
 
 //function to set event 
 void run_event_handler()
@@ -20,13 +26,13 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 	if( sdl_event_ptr->type == SDL_TEXTINPUT )
 	{
 		//Not copy or pasting
-		//if( !( SDL_GetModState() & KMOD_CTRL && ( sdl_event_ptr->text.text[ 0 ] == 'c' || sdl_event_ptr->text.text[ 0 ] == 'C' || sdl_event_ptr->text.text[ 0 ] == 'v' || sdl_event_ptr->text.text[ 0 ] == 'V' ) ) )
-		//{
+		if( !( SDL_GetModState() & KMOD_CTRL && ( sdl_event_ptr->text.text[ 0 ] == 'c' || sdl_event_ptr->text.text[ 0 ] == 'C' || sdl_event_ptr->text.text[ 0 ] == 'v' || sdl_event_ptr->text.text[ 0 ] == 'V' ) ) )
+		{
 			std::cout << "text input called in eventhandler! \n";
 			//Assign character
 			pushEventInstance(Event::TEXT_IN);
-			inputChar = *sdl_event_ptr->text.text;
-		//}
+			inputChar = sdl_event_ptr->text.text;
+		}
 	}
     else if(sdl_event_ptr->type == SDL_QUIT){pushEventInstance(Event::QUIT_WINDOW);}
     //If key was pressed
@@ -131,4 +137,4 @@ void clearEventsQueue()
     event_instances_queue.swap(empty_queue);
 }
 
-char getInputCharFromTextInputEvent(){return inputChar;}
+char* getInputCharFromTextInputEvent(){return inputChar;}

@@ -190,7 +190,7 @@ int main(int argc, char* args[])
 		//The current input text.
 		inputText = "Some Text";
 		gInputTextTexture.loadFromRenderedText( inputText.c_str(), textColor,gFont,gRenderer );
-        SDL_StartTextInput();
+		gPromptTextTexture.loadFromRenderedText( "Enter Text Code:", textColor, gFont,gRenderer );
         
         /**Push first state in stack **/
         //Start off by pushing function GameLoop pointer to the stack
@@ -225,6 +225,9 @@ void DungeonGameLoop()
 				
     //start cap timer
     frameRateCap.startCapTimer();
+    
+    if(textInputMode){SDL_StartTextInput();}
+    else{SDL_StopTextInput();}
     
     //Handle events
     run_event_handler();
@@ -269,6 +272,8 @@ void DungeonGameLoop()
     baseGameState->handle_events_RNG(rng);
     collisionHandler->run_collision_handler(); //run collision handler to update collision states
     
+    gDungeonCreatorPtr->GetTextInput(inputText);
+    
     //calculate FPS 
     frameRateCap.calculateFPS();
     
@@ -308,8 +313,8 @@ void DungeonGameLoop()
 	}
 	
     //Render text textures
-	gPromptTextTexture.render( ( SCREEN_WIDTH - gPromptTextTexture.getWidth() ) / 2, 0,gRenderer );
-	gInputTextTexture.render( ( SCREEN_WIDTH - gInputTextTexture.getWidth() ) / 2, gPromptTextTexture.getHeight(),gRenderer );
+	gPromptTextTexture.render( ( SCREEN_WIDTH - gPromptTextTexture.getWidth() ) / 2, 50,gRenderer );
+	gInputTextTexture.render( ( SCREEN_WIDTH - gInputTextTexture.getWidth() ) / 2, 50 + gPromptTextTexture.getHeight(),gRenderer );
     
     //render fps
     //frameRateCap.renderFrameRate(SCREEN_WIDTH,SCREEN_HEIGHT,gFont,gRenderer);

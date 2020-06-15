@@ -4,6 +4,10 @@ DungeonCreator::DungeonCreator()
 {
 	ptrDungeonToEdit = nullptr;
 	
+	m_tile_input = DungeonTile::TileType::RED;
+    m_enemy_input = EnemyInput::NONE;
+    m_item_input = ItemInput::NONE;
+	
 }
 
 DungeonCreator::~DungeonCreator()
@@ -36,16 +40,20 @@ void DungeonCreator::logic()
 	//for now, every time mouse is clicked a tile is put
 	if(m_mouseState == MouseState::MOUSE_DOWN)
 	{
-		m_dungeonCreatorState = DungeonCreatorState::PUT_TILE;
-	}
+		m_dungeonCreatorState = DungeonCreatorState::NONE;
+		
+		DungeonCreator::SetStateFromInputCode();
 	
-	switch(m_dungeonCreatorState)
-	{
-		case DungeonCreatorState::PUT_TILE:
+		switch(m_dungeonCreatorState)
 		{
-			DungeonCreator::PutTile(DungeonTile::TileType::CENTER);
+			case DungeonCreatorState::PUT_TILE:
+			{
+				DungeonCreator::PutTile(m_tile_input);
+			}
 		}
 	}
+	
+	
 	
 	//reset mouse state
 	m_mouseState = MouseState::NONE;
@@ -126,4 +134,15 @@ void DungeonCreator::SetupCamera()
     } 
     * */
     
+}
+
+void DungeonCreator::GetTextInput(std::string text){m_textCode = text;}
+
+void DungeonCreator::SetStateFromInputCode()
+{
+	if(m_textCode == "hole"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::CENTER;}
+	if(m_textCode == "red"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::RED;}
+	if(m_textCode == "green"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::GREEN;}
+	if(m_textCode == "blue"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BLUE;}
+	
 }
