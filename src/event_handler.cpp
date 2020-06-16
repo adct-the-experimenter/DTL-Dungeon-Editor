@@ -28,7 +28,6 @@ void readAndSetEventQueue(SDL_Event* sdl_event_ptr)
 		//Not copy or pasting
 		if( !( SDL_GetModState() & KMOD_CTRL && ( sdl_event_ptr->text.text[ 0 ] == 'c' || sdl_event_ptr->text.text[ 0 ] == 'C' || sdl_event_ptr->text.text[ 0 ] == 'v' || sdl_event_ptr->text.text[ 0 ] == 'V' ) ) )
 		{
-			std::cout << "text input called in eventhandler! \n";
 			//Assign character
 			pushEventInstance(Event::TEXT_IN);
 			inputChar = sdl_event_ptr->text.text;

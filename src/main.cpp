@@ -170,6 +170,7 @@ std::string inputText;
 bool textInputMode = false;
 
 std::string filepath_dungeon_xml = "";
+bool fileExists = false;
 
 int main(int argc, char* args[])
 {
@@ -251,7 +252,6 @@ void DungeonGameLoop()
         {
 			if(getEventInstanceFront() == Event::TEXT_IN)
 			{
-				std::cout << "text input called in main! \n";
 				//Append character
 				inputText += getInputCharFromTextInputEvent();
 				renderText = true;
@@ -386,7 +386,7 @@ void Dungeon1()
 	
 	dungeonCreatorUPtr->SetDungeonToEdit(dungeonUPtr.get());
 	
-	std::string path = "./test-file.xml";
+	
 	dungeonXMLCreatorUPtr->SetPointerToDungeon(dungeonUPtr.get());
 	
 	
@@ -448,7 +448,18 @@ void Dungeon1()
     dungeonUPtr->GenerateEmptyDungeonForXMLLoad();
     
     std::unique_ptr <DungeonXMLReader> dungeonXMLReaderUPtr(new DungeonXMLReader() );
-    dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
+    
+    std::string path = "./test-file.xml";
+    if(filepath_dungeon_xml != ""){ path = filepath_dungeon_xml;}
+    
+    if(!fileExists && path == filepath_dungeon_xml)
+    {
+		dungeonXMLCreatorUPtr->CreateXMLFile(path);
+	}
+	else if(fileExists && path == filepath_dungeon_xml)
+	{
+		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
+	}
     
     float x = 320; float y = 240;
     dungeonUPtr->PlaceDotInThisLocation(x,y);
@@ -516,7 +527,7 @@ void Dungeon1()
 		quitGame = true;
 	}
 	
-	//dungeonXMLCreatorUPtr->CreateXMLFile(path);
+	dungeonXMLCreatorUPtr->CreateXMLFile(path);
 
 	loop += 1;
 	std::cout << "Loop: " <<loop << std::endl;
@@ -960,13 +971,15 @@ int checkForRendererDriverInput(int& argc, char* argv[])
 					  if((bool)ifile)
 					  {
 						  std::cout << "Editing " << filepath_dungeon_xml << std::endl;
-						  return 0;
+						  fileExists = true;
 					  }
 					  else
 					  {
-						  std::cout << "File does not exist!\n";
-						  return -1;
+						  std::cout << "File does not exist! Creating " << filepath_dungeon_xml << std::endl;
+						  fileExists = false;
 					  }
+					  
+					  return 0;
 					
 				} 
 				else 
