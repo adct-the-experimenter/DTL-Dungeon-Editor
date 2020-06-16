@@ -63,8 +63,8 @@ void DungeonCreator::logic()
 
 void DungeonCreator::PutTile(DungeonTile::TileType type)
 {
-	std::cout << "Put tile called!\n";
-	std::cout << "mouseX: " << mouseX << " , mouseY: " << mouseY << std::endl;
+	//std::cout << "Put tile called!\n";
+	//std::cout << "mouseX: " << mouseX << " , mouseY: " << mouseY << std::endl;
 	
 	if(ptrDungeonToEdit)
 	{
@@ -74,7 +74,7 @@ void DungeonCreator::PutTile(DungeonTile::TileType type)
 		tileX = mouseX + ptrDungeonToEdit->lCamera.x;
 		tileY = mouseY + ptrDungeonToEdit->lCamera.y;
 		
-		std::cout << "tileX: " << tileX << " , tileY: " << tileY << std::endl;
+		//std::cout << "tileX: " << tileX << " , tileY: " << tileY << std::endl;
 		
 		DungeonTile* thisTile = ptrDungeonToEdit->getDungeonTileFromPosition(tileX,tileY);
 		thisTile->setType(type);
