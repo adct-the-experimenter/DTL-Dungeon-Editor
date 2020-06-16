@@ -169,6 +169,8 @@ LTexture gInputTextTexture;
 std::string inputText;
 bool textInputMode = false;
 
+std::string filepath_dungeon_xml = "";
+
 int main(int argc, char* args[])
 {
     //std::cout << args[0];
@@ -945,6 +947,34 @@ int checkForRendererDriverInput(int& argc, char* argv[])
 				std::cout << "\nSoftware fallback forced! \n";
 				use_software_fallback = true;
 				return 0;
+			}
+			
+			if(std::string(argv[i]) == "--file")
+			{
+				if (i + 1 < argc) 
+				{ 
+					// Make sure we aren't at the end of argv!
+					filepath_dungeon_xml = std::string(argv[i+1]); // Increment 'i' so we don't get the argument as the next argv[i].
+					
+					  std::ifstream ifile(filepath_dungeon_xml);
+					  if((bool)ifile)
+					  {
+						  std::cout << "Editing " << filepath_dungeon_xml << std::endl;
+						  return 0;
+					  }
+					  else
+					  {
+						  std::cout << "File does not exist!\n";
+						  return -1;
+					  }
+					
+				} 
+				else 
+				{ 
+					// Uh-oh, there was no argument to the destination option.
+					std::cerr << "--renderer-driver option requires one argument." << std::endl;
+					return -1;
+				}
 			}
 			
 		}
