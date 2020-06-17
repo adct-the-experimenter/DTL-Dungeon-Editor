@@ -877,7 +877,7 @@ int checkForRendererDriverInput(int& argc, char* argv[])
 		{
 			if(std::string(argv[i]) == "--help")
 			{
-				std::cout << "\n Usage: \n--renderer-software-fallback Forces program to use software fallback instead of hardware acceleration. \n--renderer-driver NUM Choses renderer driver(NUM) to use. \n--show-renderer-drivers-info Shows info on drivers especially NUM place of driver. \n--show-video-drivers-info Shows info on video cards to use. \n";
+				std::cout << "\n Usage: \n--renderer-software-fallback Forces program to use software fallback instead of hardware acceleration. \n--renderer-driver NUM Choses renderer driver(NUM) to use. \n--show-renderer-drivers-info Shows info on drivers especially NUM place of driver. \n--show-video-drivers-info Shows info on video cards to use. \n--file dungeon.xml Specifies xml file to save/load dungeon info.";
 				return -1;
 			}
 			
