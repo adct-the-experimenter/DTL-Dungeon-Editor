@@ -1,0 +1,21 @@
+Text Codes Implemented in the editor.
+
+Tiles:
+	-red
+
+	-blue
+	
+	-green
+	
+	-hole
+
+
+
+
+
+Enemies:
+
+
+
+
+Items:

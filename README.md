@@ -16,6 +16,8 @@ This editor is designed for the open-source video game Door To Life.
 
 Text Input Mode is the mode used to enter a text code for what the editor should add to the dungeon.
 
+See codes implemented in the editor in TextCodeList.txt
+
 Press the / key to switch between text input mode and game play mode.
 
 Left-Click on any tile with mouse to place a tile, enemy, or item in the dungeon.
