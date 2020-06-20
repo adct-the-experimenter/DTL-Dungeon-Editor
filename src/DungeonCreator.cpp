@@ -82,59 +82,6 @@ void DungeonCreator::PutTile(DungeonTile::TileType type)
 	}
 }
 
-void DungeonCreator::SetupCamera()
-{
-	/*
-    //Mouse offsets
-    int x = 0, y = 0;
-    
-    //Get mouse offsets
-    SDL_GetMouseState( &x, &y );
-    
-    //Move camera to the left if needed
-    if( x < globalTileWidth )
-    {
-        camera.x -= 20;
-    }
-    
-    //Move camera to the right if needed
-    if( x > SCREEN_WIDTH - globalTileWidth )
-    {
-        camera.x += 20;
-    }
-    
-    //Move camera up if needed
-    if( y < globalTileWidth )
-    {
-        camera.y -= 20;
-    }
-    
-    //Move camera down if needed
-    if( y > SCREEN_HEIGHT - globalTileWidth )
-    {
-        camera.y += 20;
-    }
-    
-     //Keep the camera in bounds.
-    if( camera.x < 0 )
-    {
-        camera.x = 0;    
-    }
-    if( camera.y < 0 )
-    {
-        camera.y = 0;    
-    }
-    if( camera.x > LEVEL_WIDTH - camera.w )
-    {
-        camera.x = LEVEL_WIDTH - camera.w;    
-    }
-    if( camera.y > LEVEL_HEIGHT - camera.h )
-    {
-        camera.y = LEVEL_HEIGHT - camera.h;    
-    } 
-    * */
-    
-}
 
 void DungeonCreator::GetTextInput(std::string text){m_textCode = text;}
 
@@ -144,5 +91,12 @@ void DungeonCreator::SetStateFromInputCode()
 	if(m_textCode == "red"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::RED;}
 	if(m_textCode == "green"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::GREEN;}
 	if(m_textCode == "blue"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BLUE;}
-	
+	if(m_textCode ==  "top"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::TOP; }
+	if(m_textCode ==  "topleft"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::TOP_LEFT; }
+	if(m_textCode ==  "topright"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::TOP_RIGHT; }
+	if(m_textCode ==  "left"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::LEFT; }
+	if(m_textCode ==  "right"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::RIGHT; }
+	if(m_textCode ==  "bottomleft"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM_LEFT; }
+	if(m_textCode ==  "bottom"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM; }
+	if(m_textCode ==  "bottomright"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM_RIGHT; }
 }

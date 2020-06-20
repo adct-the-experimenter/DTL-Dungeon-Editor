@@ -455,6 +455,7 @@ void Dungeon1()
     if(!fileExists && path == filepath_dungeon_xml)
     {
 		dungeonXMLCreatorUPtr->CreateXMLFile(path);
+		dungeonXMLReaderUPtr->SetDungeonTilesFromXML(path,dungeonUPtr.get());
 	}
 	else if(fileExists && path == filepath_dungeon_xml)
 	{

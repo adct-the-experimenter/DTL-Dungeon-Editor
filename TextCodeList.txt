@@ -8,7 +8,22 @@ Tiles:
 	-green
 	
 	-hole
-
+	
+	-top
+	
+	-topleft
+	
+	-topright
+	
+	-left
+	
+	-right
+	
+	-bottomleft
+	
+	-bottom
+	
+	-bottomright
 
 
 
