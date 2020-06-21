@@ -434,6 +434,7 @@ void Dungeon1()
 
 	
     //generate an empty dungeon
+    
     dungeonUPtr->setPointerToMainDot(mainDotPointer.get());
     dungeonUPtr->setPointerToTimer(&stepTimer);
     
@@ -503,6 +504,9 @@ void Dungeon1()
 	collisionHandler->EmptyCollisionObjectVector();
 	gameInventory->freeWeapons();
 	
+	//save file
+	dungeonXMLCreatorUPtr->CreateXMLFile(path);
+	
 	//delete doors and keys
 	//delete tiles
 	dungeonUPtr->freeResources();
@@ -528,7 +532,7 @@ void Dungeon1()
 		quitGame = true;
 	}
 	
-	dungeonXMLCreatorUPtr->CreateXMLFile(path);
+	
 
 	loop += 1;
 	std::cout << "Loop: " <<loop << std::endl;
@@ -968,19 +972,19 @@ int checkForRendererDriverInput(int& argc, char* argv[])
 					// Make sure we aren't at the end of argv!
 					filepath_dungeon_xml = std::string(argv[i+1]); // Increment 'i' so we don't get the argument as the next argv[i].
 					
-					  std::ifstream ifile(filepath_dungeon_xml);
-					  if((bool)ifile)
-					  {
-						  std::cout << "Editing " << filepath_dungeon_xml << std::endl;
-						  fileExists = true;
-					  }
-					  else
-					  {
-						  std::cout << "File does not exist! Creating " << filepath_dungeon_xml << std::endl;
-						  fileExists = false;
-					  }
-					  
-					  return 0;
+					std::ifstream ifile(filepath_dungeon_xml);
+					if((bool)ifile)
+					{
+						std::cout << "Editing " << filepath_dungeon_xml << std::endl;
+						fileExists = true;
+					}
+					else
+					{
+						std::cout << "File does not exist! Creating " << filepath_dungeon_xml << std::endl;
+						fileExists = false;
+					}
+
+					return 0;
 					
 				} 
 				else 
