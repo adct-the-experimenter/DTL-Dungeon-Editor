@@ -57,6 +57,7 @@ src/weapons_loader.cpp
 src/Dungeon_Tile.cpp src/TileMapDimensions.cpp
 src/door.cpp src/key.cpp
 src/gun.cpp src/bullet.cpp src/sword.cpp src/weapon.cpp
+src/scripted_enemy.cpp
 src/greedy_zombie.cpp
 src/othercockroach.cpp
 src/enemy.cpp src/lineofsight.cpp

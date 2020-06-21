@@ -368,7 +368,10 @@ void Dungeon::handle_events(Event& thisEvent)
 */
 }
 
-void Dungeon::handle_events_RNG(RNGType& rngSeed){}
+void Dungeon::handle_events_RNG(RNGType& rngSeed)
+{
+	m_enemy_inventory.run_enemies_handle_events(rngSeed, lCamera);
+}
 
 void Dungeon::logic()
 {
@@ -377,6 +380,12 @@ void Dungeon::logic()
 
     //move main dot
     Dungeon::moveMainDot(timeStep);
+    
+    //move enemies 
+    m_enemy_inventory.run_enemies_logic(timeStep,lCamera, dungeonTileSet);
+                        
+    //check for and remove dead enemeies
+    m_enemy_inventory.checkAndRemoveDeadEnemies(lCamera);
 
 
     //move dot back if collides with door
@@ -503,6 +512,8 @@ void Dungeon::sound(AudioRenderer* gAudioRenderer)
     //play sound from dgmSource
     alGetSourcei(*dgmSource, AL_SOURCE_STATE, &musicState);
     if (musicState == AL_STOPPED || musicState == AL_INITIAL){ alSourcePlay(*dgmSource);}
+    
+    m_enemy_inventory.run_enemies_sound(lCamera,gAudioRenderer);
 /*
     //play key sounds
     for(size_t i=0; i < (*dungeonKeys).size(); ++i)
@@ -548,6 +559,9 @@ void Dungeon::render(SDL_Renderer* gRenderer)
 
     //render dot
     mainDotPointer->render(lCamera,gRenderer);
+    
+    //render enemies
+    m_enemy_inventory.run_enemies_render(lCamera,gRenderer );
 
 /*
     //render keys
@@ -646,6 +660,9 @@ void Dungeon::freeResources()
 		delete dungeonTileSet[i];
         dungeonTileSet[i] = nullptr;
     }
+    
+    m_enemy_inventory.freeEnemyVector();
+    
 }
 
 
