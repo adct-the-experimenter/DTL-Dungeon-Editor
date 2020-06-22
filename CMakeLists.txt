@@ -31,12 +31,15 @@ find_path(pugixml_INCLUDE_DIRS pugixml.hpp)
 find_library(pugixml_LIBRARIES NAMES pugixml)
 
 
+#Lua
+find_package(Lua REQUIRED)
+
 #For the shared library:
-set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES} ${pugixml_LIBRARIES})
+set ( PROJECT_LINK_LIBS  ${openal_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2image_LIBRARIES} ${SDL2ttf_LIBRARIES} ${SDL2mixer_LIBRARIES} ${Boost_LIBRARIES} ${pugixml_LIBRARIES} ${LUA_LIBRARIES})
 #where to find library files .so 
 link_directories( /usr/lib /usr/local/lib ) 
 
-set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${SDL2ttf_INCLUDE_DIRS} ${pugixml_INCLUDE_DIRS})
+set ( PROJECT_INCLUDE_DIR ${SDL2_INCLUDE_DIRS} ${SDL2image_INCLUDE_DIRS} ${SDL2mixer_INCLUDE_DIRS} ${SDL2ttf_INCLUDE_DIRS} ${pugixml_INCLUDE_DIRS} ${LUA_INCLUDE_DIR} )
 
 #for where to find header files for source and library
 include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR})

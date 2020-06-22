@@ -4,6 +4,15 @@
 #include <iostream>
 #include <string>
 
+//lua c ibrary files
+extern "C" {
+    #include "lua.h"
+    #include "lauxlib.h"
+    #include "lualib.h"
+}
+
+#include <cstdio>
+
 
 //constructor
 ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width,height)
@@ -302,15 +311,6 @@ void freeScriptedEnemyVisualMedia(LTexture* cTexture)
     }
 }
 
-void ScriptedEnemy::setSpeed(float& speed){Enemy::setSpeed(speed);}
-
-void ScriptedEnemy::setPosX(float& x){Enemy::setPosX(x);}
-
-void ScriptedEnemy::setPosY(float& y){Enemy::setPosY(y);}
-
-void ScriptedEnemy::setVelX(float& dx){Enemy::setVelX(dx);}
-
-void ScriptedEnemy::setVelY(float& dy){Enemy::setVelY(dy);}
 
 //function to load media for sprite
 bool ScriptedEnemy::loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* gRenderer)
@@ -318,30 +318,14 @@ bool ScriptedEnemy::loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* 
     return Enemy::loadMedia(thisTex,path,gRenderer);
 }
 
-void ScriptedEnemy::setPointerToTexture(LTexture* thisTex){Enemy::setPointerToTexture(thisTex);}
+
 
 void ScriptedEnemy::setPointersToMedia(LTexture* cTexture,std::vector <SDL_Rect> &clips)
 {
-    ScriptedEnemy::setPointerToTexture(cTexture);
-    ScriptedEnemy::setSpriteClips(&clips);
+    Enemy::setPointerToTexture(cTexture);
+    Enemy::setSpriteClips(&clips);
 }
 
-LTexture* ScriptedEnemy::getPointerToTexture(){return Enemy::getPointerToTexture();}
-
-void ScriptedEnemy::setSpriteClips(std::vector <SDL_Rect> *this_clips){Enemy::setSpriteClips(this_clips);}
-
-std::vector <SDL_Rect> *ScriptedEnemy::getSpriteClips(){return Enemy::getSpriteClips();}
-
-
-void ScriptedEnemy::setPlace(std::int16_t& screenWidth, std::int16_t& screenHeight)
-{
-    Enemy::setPlace(screenWidth,screenHeight);
-}
-
-void ScriptedEnemy::setCamera( SDL_Rect& camera  ) //set camera relative to dot and intialize screen and level dimensions
-{
-	Enemy::setCamera(camera);
-}
 
 void ScriptedEnemy::handleEvent(Event& thisEvent){Enemy::handleEvent(thisEvent);}
 
@@ -358,6 +342,33 @@ void ScriptedEnemy::handleEvent_EnemyAI(RNGType& rngSeed)
 void ScriptedEnemy::setRandNumber(std::int8_t& thisNum){Enemy::setRandNumber(thisNum);}
 std::int8_t ScriptedEnemy::getRandNumber(){return Enemy::getRandNumber();}
 
+
+void RunLuaForScriptedEnemy(std::string lua_file_path)
+{
+
+	//create a new lua state
+	lua_State * L = luaL_newstate();
+
+	//open all libraries
+	luaL_openlibs(L);
+
+	int s = luaL_loadfile(L, lua_file_path.c_str());
+
+	if(!s)
+	{
+		s = lua_pcall(L, 0, LUA_MULTRET, 0);
+	}
+		
+
+	//show any errors
+	if(s){
+		printf("Error: %s \n", lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
+
+	lua_close(L);
+}
+
 void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTiles)
 {
     
@@ -367,9 +378,10 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
         //move enemy
         ScriptedEnemy::moveOnTiles_TileType(timeStep,dungeonTiles);
     }
-        
-   
-	
+    
+    RunLuaForScriptedEnemy("../data/EnemyPacks/goldroach/cockroach.lua");
+    
+	/*
     switch(Enemy::getEnemyState())
     {
         case Enemy::EnemyState::MOVING_NO_PLAYER:
@@ -397,6 +409,7 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
             ScriptedEnemy::runLogicState_CollideWithWall(timeStep); break;
         }
     }
+    */
     
     //increment loop count 
     Enemy::incrementLoopCount();
@@ -409,6 +422,8 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
         //ScriptedEnemy::pushState(ScriptedEnemy::ScriptedEnemyState::DETERMINE_DIRECTION);
     }
 }
+
+
 
 
 void ScriptedEnemy::runLogicState_MovingNoPlayer(float& timeStep)
@@ -706,13 +721,13 @@ void ScriptedEnemy::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* 
 {
     //Enemy::render(camera,gRenderer,clip);
     
-    if(ScriptedEnemy::getPointerToTexture() != nullptr)
+    if(Enemy::getPointerToTexture() != nullptr)
     {
         std::int16_t x = ScriptedEnemy::getCollisionBox().x - camera.x;
         std::int16_t y = ScriptedEnemy::getCollisionBox().y - camera.y;
         
         SDL_Rect* clip = ScriptedEnemy::getClipToShow();
-        if(clip == nullptr){clip = &(*ScriptedEnemy::getSpriteClips())[UP_1];}
+        if(clip == nullptr){clip = &(*Enemy::getSpriteClips())[UP_1];}
         Enemy::getPointerToTexture()->render( x, y, gRenderer,clip);
     }
    

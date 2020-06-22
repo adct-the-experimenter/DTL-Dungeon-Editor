@@ -4,6 +4,8 @@
 #include "enemy.h"
 #include <array>
 
+
+
 class ScriptedEnemy : public Enemy
 {
     
@@ -15,45 +17,22 @@ public:
     //destructor to free resources
     virtual ~ScriptedEnemy();
                                     
-    //set speed
-    virtual void setSpeed(float& speed);
-
-    //set current position of dot
-    virtual void setPosX(float& x);
-    virtual void setPosY(float& y);
-
-    //set x and y velocity of dot
-    virtual void setVelX(float& dx);
-    virtual void setVelY(float& dy);
     
     //function to load media for sprite
     virtual bool loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* gRenderer);
-    
-    virtual void setPointerToTexture(LTexture* thisTex);
-    virtual LTexture* getPointerToTexture();
     
     //function to load media outside class
     friend bool loadScriptedEnemyMedia(std::string xml_file_path,
 									LTexture* cTexture,
                                     std::vector <SDL_Rect> &clips,
                                     SDL_Renderer* gRenderer );
-                                    
+    //function to free media outside of class
     friend void freeScriptedEnemyMedia(LTexture* cTexture);                                
                         
     
     //function to set 
     void setPointersToMedia(LTexture* cTexture,std::vector <SDL_Rect> &clips);
     
-    //functions to initialize and return sprite clips
-    virtual void setSpriteClips(std::vector <SDL_Rect> *this_clips);
-    virtual std::vector <SDL_Rect> *getSpriteClips();
-    
-   
-
-    //initialize screen dimensions and level dimensions that sprite will move in
-    virtual void setPlace(std::int16_t& screenWidth, std::int16_t& screenHeight);
-    //Centers the camera over the sprite and intialize screen dimensions and level dimensions
-    virtual void setCamera( SDL_Rect& camera);
 
      //Takes key presses and adjusts sprite's velocity
     virtual void handleEvent(Event& thisEvent);
@@ -127,6 +106,8 @@ private:
     void setupScriptedEnemyCollisionObject();
     
     void renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer);
+    
+    
 };
 
 #endif
