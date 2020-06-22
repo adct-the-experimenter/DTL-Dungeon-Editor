@@ -33,7 +33,8 @@ public:
     virtual LTexture* getPointerToTexture();
     
     //function to load media outside class
-    friend bool loadScriptedEnemyMedia(LTexture* cTexture,
+    friend bool loadScriptedEnemyMedia(std::string xml_file_path,
+									LTexture* cTexture,
                                     std::vector <SDL_Rect> &clips,
                                     SDL_Renderer* gRenderer );
                                     

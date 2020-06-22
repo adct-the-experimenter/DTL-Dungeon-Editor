@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+
+<EnemyRoot>
+	<Texture path="cockroach.png"/>
+	<WalkClips>
+		<clip_width width="51" />
+		<clip_height height="65" />
+		<clip_num number="32" />
+		<clips>
+			
+			<UP_1 x="6" y="192"/>
+			<UP_2 x="70" y="192"/> 
+			<UP_3 x="136" y="192"/> 
+			<UP_4 x="199" y="192"/>
+			
+			<UP_RIGHT_1 x="0" y="138"/>
+			<UP_RIGHT_2 x="65" y="138"/>
+			<UP_RIGHT_3 x="127" y="138"/>
+			<UP_RIGHT_4 x="191" y="138"/>
+			
+			<UP_LEFT_1 x="0" y="82"/>
+			<UP_LEFT_2 x="63" y="82"/>
+			<UP_LEFT_3 x="126" y="82"/>
+			<UP_LEFT_4 x="190" y="82"/>
+			
+			<LEFT_1 x="0" y="82"/>
+			<LEFT_2 x="63" y="82"/>
+			<LEFT_3 x="126" y="82"/>
+			<LEFT_4 x="190" y="82"/>
+			
+			<DOWN_1 x="5" y="3"/>
+			<DOWN_2 x="68" y="3"/>
+			<DOWN_3 x="134" y="3"/>
+			<DOWN_4 x="198" y="3"/>
+			
+			<DOWN_LEFT_1 x="0" y="82"/>
+			<DOWN_LEFT_2 x="63" y="82"/>
+			<DOWN_LEFT_3 x="126" y="82"/>
+			<DOWN_LEFT_4 x="190" y="82"/>
+			
+			<DOWN_RIGHT_1 x="0" y="138"/>
+			<DOWN_RIGHT_2 x="65" y="138"/>
+			<DOWN_RIGHT_3 x="127" y="138"/>
+			<DOWN_RIGHT_4 x="191" y="138"/>
+			
+			<RIGHT_1" x="0" y="138"/>
+			<RIGHT_2" x="65" y="138"/>
+			<RIGHT_3" x="127" y="138"/>
+			<RIGHT_4" x="191" y="138"/>
+			
+		</clips>
+	</WalkClips>
+	
+	
+</EnemyRoot>

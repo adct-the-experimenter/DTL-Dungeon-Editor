@@ -1,5 +1,10 @@
 #include "scripted_enemy.h"
 
+#include "pugixml.hpp"
+#include <iostream>
+#include <string>
+
+
 //constructor
 ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width,height)
 {
@@ -41,71 +46,253 @@ void ScriptedEnemy::setupScriptedEnemyCollisionObject()
     Enemy::setOwnerTypeOfCollisionObject(type);
 }
 
-bool loadScriptedEnemyMedia(LTexture* cTexture,
+bool loadScriptedEnemyVisualMedia(std::string xml_file_path,
+						LTexture* cTexture,
                         std::vector <SDL_Rect> &walk_clips,
                         SDL_Renderer* gRenderer )
 {
-    bool success = true;
     
-    std::string cTexFilePath = DATADIR_STR + std::string("/Graphics/greedy-zombie.png");
-    //initialize greedy zombie image
+    // Create empty XML document within memory
+	pugi::xml_document doc;
+
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(xml_file_path.c_str(),
+											pugi::parse_default);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description() << ", character pos= " << result.offset;
+		return false;
+	}
+    
+    pugi::xml_node root = doc.child("EnemyRoot");
+    
+    std::string cTexFilePath = xml_file_path + root.child("Texture").attribute("path").value();
+    
+    //initialize texture
     if(!cTexture->loadFromFile(cTexFilePath.c_str(),gRenderer) )
     {
-        success = false;
-        std::cout << "greedy zombie image loading failed! \n";
+        std::cout << "scripted enemy image loading failed! \n";
+        return false;
     }
     else
     {
-        walk_clips.resize(32);
-    
-        std::int8_t width = 51;
-        std::int8_t height = 65;
+		
+		std::string valString;
+		
+		//set size of walk clips vector
+		valString = root.child("WalkClips").child("clip_num").attribute("number").value();
+		size_t clipsNum = atoi(valString.c_str());;
+        walk_clips.resize(clipsNum);
+		
+		//set width and height of each uniform clips
+		valString = root.child("WalkClips").child("clip_width").attribute("width").value();
+        std::int8_t width = atoi(valString.c_str());
+        valString = root.child("WalkClips").child("clip_height").attribute("height").value();
+        std::int8_t height = atoi(valString.c_str());
         
-        walk_clips[Sprite::UP_1] = {6,192,51,65};
-        walk_clips[Sprite::UP_2] = {70,192,51,65}; 
-        walk_clips[Sprite::UP_3] = {136,192,51,65}; 
-        walk_clips[Sprite::UP_4] = {199,192,51,65};
+        SDL_Rect clip;
+        clip.w = width;
+        clip.h = height;
         
-        walk_clips[Sprite::UP_LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::UP_LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::UP_LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::UP_LEFT_4] = {190,82,64,54};
+        valString = root.child("WalkClips").child("UP_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_1] = clip;
         
-        walk_clips[Sprite::LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::LEFT_4] = {190,82,64,54};
+        valString = root.child("WalkClips").child("UP_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_2] = clip; 
         
-        walk_clips[Sprite::DOWN_LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_4] = {190,82,64,54};
+        valString = root.child("WalkClips").child("UP_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_3] = clip; 
         
-        walk_clips[Sprite::DOWN_1] = {5,3,51,65};
-        walk_clips[Sprite::DOWN_2] = {68,3,51,65};
-        walk_clips[Sprite::DOWN_3] = {134,3,51,65};
-        walk_clips[Sprite::DOWN_4] = {198,3,51,65};
+        valString = root.child("WalkClips").child("UP_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_4] = clip;
         
-        walk_clips[Sprite::RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::RIGHT_4] = {191,138,64,54};
+        valString = root.child("WalkClips").child("UP_LEFT_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_LEFT_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_LEFT_1] = clip;
         
-        walk_clips[Sprite::DOWN_RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_4] = {191,138,64,54};
+        valString = root.child("WalkClips").child("UP_LEFT_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_LEFT_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_LEFT_2] = clip;
         
-        walk_clips[Sprite::UP_RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_4] = {191,138,64,54};
+        valString = root.child("WalkClips").child("UP_LEFT_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_LEFT_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_LEFT_3] = clip;
+        
+        valString = root.child("WalkClips").child("UP_LEFT_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_LEFT_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_LEFT_4] = clip;
+        
+        valString = root.child("WalkClips").child("LEFT_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("LEFT_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::LEFT_1] = clip;
+        
+        valString = root.child("WalkClips").child("LEFT_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("LEFT_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::LEFT_2] = clip;
+        
+        valString = root.child("WalkClips").child("LEFT_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("LEFT_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::LEFT_3] = clip;
+        
+        valString = root.child("WalkClips").child("LEFT_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("LEFT_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::LEFT_4] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_LEFT_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_LEFT_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_LEFT_1] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_LEFT_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_LEFT_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_LEFT_2] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_LEFT_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_LEFT_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_LEFT_3] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_LEFT_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_LEFT_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_LEFT_4] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_1] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_2] = clip;
+        
+        valString = root.child("WalkClips").child("UP_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_3] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_4] = clip;
+        
+        valString = root.child("WalkClips").child("RIGHT_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("RIGHT_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::RIGHT_1] = clip;
+        
+        valString = root.child("WalkClips").child("RIGHT_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("RIGHT_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::RIGHT_2] = clip;
+        
+        valString = root.child("WalkClips").child("RIGHT_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("RIGHT_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::RIGHT_3] = clip;
+        
+        valString = root.child("WalkClips").child("RIGHT_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("RIGHT_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::RIGHT_4] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_RIGHT_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_RIGHT_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_RIGHT_1] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_RIGHT_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_RIGHT_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_RIGHT_2] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_RIGHT_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_RIGHT_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_RIGHT_3] = clip;
+        
+        valString = root.child("WalkClips").child("DOWN_RIGHT_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("DOWN_RIGHT_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::DOWN_RIGHT_4] = clip;
+        
+        valString = root.child("WalkClips").child("UP_RIGHT_1").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_RIGHT_1").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_RIGHT_1] = clip;
+        
+        valString = root.child("WalkClips").child("UP_RIGHT_2").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_RIGHT_2").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_RIGHT_2] = clip;
+        
+        valString = root.child("WalkClips").child("UP_RIGHT_3").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_RIGHT_3").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_RIGHT_3] = clip;
+        
+        valString = root.child("WalkClips").child("UP_RIGHT_4").attribute("x").value();
+        clip.x = atoi(valString.c_str());;
+        valString = root.child("WalkClips").child("UP_RIGHT_4").attribute("y").value();
+        clip.y = atoi(valString.c_str());;
+        walk_clips[Sprite::UP_RIGHT_4] = clip;
     }
     
-    return success;
+    return true;
 }
 
-void freeScriptedEnemyMedia(LTexture* cTexture)
+void freeScriptedEnemyVisualMedia(LTexture* cTexture)
 {
     if(cTexture != nullptr)
     {
