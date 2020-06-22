@@ -46,7 +46,7 @@ void ScriptedEnemy::setupScriptedEnemyCollisionObject()
     Enemy::setOwnerTypeOfCollisionObject(type);
 }
 
-bool loadScriptedEnemyVisualMedia(std::string xml_file_path,
+bool loadScriptedEnemyVisualMedia(std::string xml_file_path,std::string xml_file_dir,
 						LTexture* cTexture,
                         std::vector <SDL_Rect> &walk_clips,
                         SDL_Renderer* gRenderer )
@@ -68,12 +68,13 @@ bool loadScriptedEnemyVisualMedia(std::string xml_file_path,
     
     pugi::xml_node root = doc.child("EnemyRoot");
     
-    std::string cTexFilePath = xml_file_path + root.child("Texture").attribute("path").value();
+    std::string cTexFilePath = xml_file_dir + root.child("Texture").attribute("path").value();
     
     //initialize texture
     if(!cTexture->loadFromFile(cTexFilePath.c_str(),gRenderer) )
     {
         std::cout << "scripted enemy image loading failed! \n";
+        std::cout << "filepath:" << cTexFilePath << std::endl;
         return false;
     }
     else

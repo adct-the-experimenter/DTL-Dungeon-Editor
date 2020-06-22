@@ -45,6 +45,8 @@ public:
 	//function to free media of all enemies
 	void freeEnemyMedia();
 	
+	//Enemy construction and placement
+	void CreateScriptEnemy();
 private:
 	std::vector <Enemy*> enemies_vector;
 };

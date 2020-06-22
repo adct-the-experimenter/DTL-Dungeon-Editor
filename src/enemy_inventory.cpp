@@ -159,3 +159,13 @@ void EnemyInventory::freeEnemyVector()
 		}
     }
 }
+
+void EnemyInventory::CreateScriptEnemy()
+{
+	
+	//make it a cockroach
+	ScriptedEnemy* thisEnemy = new ScriptedEnemy(0,0,55,65);
+	thisEnemy->setPointersToMedia(&script_enemy_texture,script_enemy_walk_clips);
+	
+	enemies_vector.push_back(thisEnemy);
+}

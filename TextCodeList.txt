@@ -24,6 +24,8 @@ Tiles:
 	-bottom
 	
 	-bottomright
+	
+	-script
 
 
 

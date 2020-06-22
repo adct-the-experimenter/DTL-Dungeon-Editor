@@ -36,7 +36,7 @@ void freeGreedyZombieMedia(LTexture* cTexture);
 bool setupLoad_ScriptedEnemy(SDL_Renderer* gRenderer);
 extern LTexture script_enemy_texture;
 extern std::vector <SDL_Rect> script_enemy_walk_clips;
-bool loadScriptedEnemyVisualMedia(std::string xml_file_path,
+bool loadScriptedEnemyVisualMedia(std::string xml_file_path,std::string xml_file_dir,
 						LTexture* cTexture,
                         std::vector <SDL_Rect> &clips,
                         SDL_Renderer* gRenderer );

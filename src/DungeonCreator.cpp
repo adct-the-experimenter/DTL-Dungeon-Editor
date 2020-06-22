@@ -49,7 +49,15 @@ void DungeonCreator::logic()
 			case DungeonCreatorState::PUT_TILE:
 			{
 				DungeonCreator::PutTile(m_tile_input);
+				break;
 			}
+			
+			case DungeonCreatorState::PUT_ENEMY:
+			{
+				DungeonCreator::PutEnemy(m_enemy_input);
+				break;
+			}
+			default:{break;}
 		}
 	}
 	
@@ -59,6 +67,9 @@ void DungeonCreator::logic()
 	m_mouseState = MouseState::NONE;
 	//reset dungeon creator state
 	m_dungeonCreatorState = DungeonCreatorState::NONE;
+	//reset tile and enemy input
+	m_tile_input = DungeonTile::TileType::RED;
+	m_enemy_input = EnemyInput::NONE;
 }
 
 void DungeonCreator::PutTile(DungeonTile::TileType type)
@@ -82,6 +93,22 @@ void DungeonCreator::PutTile(DungeonTile::TileType type)
 	}
 }
 
+void DungeonCreator::PutEnemy(EnemyInput enemy_type)
+{
+	if(ptrDungeonToEdit)
+	{
+		int tileX,tileY;
+		
+		 //Adjust to camera
+		tileX = mouseX + ptrDungeonToEdit->lCamera.x;
+		tileY = mouseY + ptrDungeonToEdit->lCamera.y;
+		
+		//std::cout << "tileX: " << tileX << " , tileY: " << tileY << std::endl;
+		
+		ptrDungeonToEdit->m_enemy_inventory.CreateScriptEnemy();
+		ptrDungeonToEdit->m_enemy_inventory.GetEnemyVector()->back()->placeChar(tileX,tileY);
+	}
+}
 
 void DungeonCreator::GetTextInput(std::string text){m_textCode = text;}
 
@@ -99,4 +126,5 @@ void DungeonCreator::SetStateFromInputCode()
 	if(m_textCode ==  "bottomleft"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM_LEFT; }
 	if(m_textCode ==  "bottom"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM; }
 	if(m_textCode ==  "bottomright"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM_RIGHT; }
+	if(m_textCode == "script"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_ENEMY; m_enemy_input = DungeonCreator::EnemyInput::SCRIPTED_ENEMY;}
 }
