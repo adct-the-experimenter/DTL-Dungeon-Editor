@@ -339,11 +339,8 @@ void ScriptedEnemy::handleEvent_EnemyAI(RNGType& rngSeed)
     ScriptedEnemy::setRandNumber(thisRandNumber);
 }
 
-void ScriptedEnemy::setRandNumber(std::int8_t& thisNum){Enemy::setRandNumber(thisNum);}
-std::int8_t ScriptedEnemy::getRandNumber(){return Enemy::getRandNumber();}
 
-
-void RunLuaForScriptedEnemy(std::string lua_file_path)
+void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path)
 {
 
 	//create a new lua state
@@ -352,20 +349,21 @@ void RunLuaForScriptedEnemy(std::string lua_file_path)
 	//open all libraries
 	luaL_openlibs(L);
 
-	int s = luaL_loadfile(L, lua_file_path.c_str());
+	/* load the script */
+	luaL_dofile(L, lua_file_path.c_str());
 
-	if(!s)
-	{
-		s = lua_pcall(L, 0, LUA_MULTRET, 0);
-	}
-		
+	/* the function name */
+	lua_getglobal(L, "logic");
 
-	//show any errors
-	if(s){
-		printf("Error: %s \n", lua_tostring(L, -1));
-		lua_pop(L, 1);
-	}
+	/* the first argument, random number */
+	lua_pushnumber(L, Enemy::getRandNumber());
 
+	/* the second argument, enemy state */
+	lua_pushnumber(L, (int)Enemy::getEnemyState());
+
+	/* call the function with 2 arguments, return 0 result */
+	lua_call(L, 2, 0);
+	
 	lua_close(L);
 }
 
@@ -379,37 +377,10 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
         ScriptedEnemy::moveOnTiles_TileType(timeStep,dungeonTiles);
     }
     
-    RunLuaForScriptedEnemy("../data/EnemyPacks/goldroach/cockroach.lua");
+    ScriptedEnemy::reactToCollision();
+    Enemy::checkViewForPlayer();
     
-	/*
-    switch(Enemy::getEnemyState())
-    {
-        case Enemy::EnemyState::MOVING_NO_PLAYER:
-        {
-            ScriptedEnemy::runLogicState_MovingNoPlayer(timeStep); break;
-        }
-        case Enemy::EnemyState::MOVING_SEE_PLAYER:
-        {
-            ScriptedEnemy::runLogicState_MovingSeePlayer(timeStep); break;
-        }
-        case Enemy::EnemyState::HIT_BY_WEAPON:
-        {
-             ScriptedEnemy::runLogicState_HitByWeapon(timeStep); break;
-        }
-        case Enemy::EnemyState::HIT_PLAYER:
-        {
-            ScriptedEnemy::runLogicState_HitPlayer(timeStep); break;
-        }
-        case Enemy::EnemyState::PUSHED_BACK:
-        {
-            ScriptedEnemy::runLogicState_PushedBack(timeStep); break;
-        }
-        case Enemy::EnemyState::COLLIDE_WITH_WALL:
-        {
-            ScriptedEnemy::runLogicState_CollideWithWall(timeStep); break;
-        }
-    }
-    */
+    RunLuaLogicForScriptedEnemy("../data/EnemyPacks/goldroach/cockroach.lua");
     
     //increment loop count 
     Enemy::incrementLoopCount();

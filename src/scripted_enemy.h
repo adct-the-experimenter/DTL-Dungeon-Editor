@@ -72,9 +72,6 @@ public:
 //State
   
     
-    virtual void setRandNumber(std::int8_t& thisNum);
-    virtual std::int8_t getRandNumber();
-    
     virtual void runLogicState_MovingNoPlayer(float& timeStep);
     virtual void runLogicState_MovingSeePlayer(float& timeStep);
     virtual void runLogicState_HitByWeapon(float& timeStep);
@@ -107,7 +104,7 @@ private:
     
     void renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer);
     
-    
+    void RunLuaLogicForScriptedEnemy(std::string lua_file_path);
 };
 
 #endif
