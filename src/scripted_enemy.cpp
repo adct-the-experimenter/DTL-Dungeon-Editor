@@ -4,15 +4,12 @@
 #include <iostream>
 #include <string>
 
-//lua c ibrary files
-extern "C" {
-    #include "lua.h"
-    #include "lauxlib.h"
-    #include "lualib.h"
-}
+
 
 #include <cstdio>
+#include <functional>
 
+ScriptedEnemy* ext_se_ptr = nullptr;
 
 //constructor
 ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width,height)
@@ -40,6 +37,7 @@ ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width
     
     Enemy::resetPushBackVariables();
     
+    ext_se_ptr = this;
     //std::cout << "\n ScriptedEnemy constructor called! \n";
 }
 
@@ -51,7 +49,7 @@ ScriptedEnemy::~ScriptedEnemy()
 
 void ScriptedEnemy::setupScriptedEnemyCollisionObject()
 {
-    CollisionBoxOwnerType type = CollisionBoxOwnerType::GREEDY_ZOMBIE;
+    CollisionBoxOwnerType type = CollisionBoxOwnerType::SCRIPTED_ENEMY;
     Enemy::setOwnerTypeOfCollisionObject(type);
 }
 
@@ -340,7 +338,47 @@ void ScriptedEnemy::handleEvent_EnemyAI(RNGType& rngSeed)
 }
 
 
-void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path)
+static int function_wrap_moveUp(lua_State* L)
+{
+	if(ext_se_ptr)
+	{
+		float timeStep = lua_tonumber(L,1); //get timestep from first argument
+		//std::cout << "C++ function called! timeStep:" << timeStep;
+		ext_se_ptr->lua_moveUp(L,timeStep);
+	}
+}
+
+static int function_wrap_moveLeft(lua_State* L)
+{
+	if(ext_se_ptr)
+	{
+		float timeStep = lua_tonumber(L,1); //get timestep from first argument
+		//std::cout << "C++ function called! timeStep:" << timeStep;
+		ext_se_ptr->lua_moveLeft(L,timeStep);
+	}
+}
+
+static int function_wrap_moveRight(lua_State* L)
+{
+	if(ext_se_ptr)
+	{
+		float timeStep = lua_tonumber(L,1); //get timestep from first argument
+		//std::cout << "C++ function called! timeStep:" << timeStep;
+		ext_se_ptr->lua_moveRight(L,timeStep);
+	}
+}
+
+static int function_wrap_moveDown(lua_State* L)
+{
+	if(ext_se_ptr)
+	{
+		float timeStep = lua_tonumber(L,1); //get timestep from first argument
+		//std::cout << "C++ function called! timeStep:" << timeStep;
+		ext_se_ptr->lua_moveDown(L,timeStep);
+	}
+}
+
+void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path,float& timeStep)
 {
 
 	//create a new lua state
@@ -348,21 +386,30 @@ void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path)
 
 	//open all libraries
 	luaL_openlibs(L);
+	
+	//Expose the c_swap function to the lua environment
+	//lua_register(L, "moveUp", function_wrap_moveUp);
+	lua_register(L, "moveLeft", function_wrap_moveLeft);
+	//lua_register(L, "moveRight", function_wrap_moveRight);
+	//lua_register(L, "moveDown", function_wrap_moveDown);
 
 	/* load the script */
 	luaL_dofile(L, lua_file_path.c_str());
-
+	
 	/* the function name */
 	lua_getglobal(L, "logic");
+	
+	/* the first argument, time step */
+	lua_pushnumber(L, timeStep);
 
-	/* the first argument, random number */
+	/* the second argument, random number */
 	lua_pushnumber(L, Enemy::getRandNumber());
 
-	/* the second argument, enemy state */
+	/* the third argument, enemy state */
 	lua_pushnumber(L, (int)Enemy::getEnemyState());
 
 	/* call the function with 2 arguments, return 0 result */
-	lua_call(L, 2, 0);
+	lua_call(L, 3, 0);
 	
 	lua_close(L);
 }
@@ -380,7 +427,7 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
     ScriptedEnemy::reactToCollision();
     Enemy::checkViewForPlayer();
     
-    RunLuaLogicForScriptedEnemy("../data/EnemyPacks/goldroach/cockroach.lua");
+    RunLuaLogicForScriptedEnemy("../data/EnemyPacks/goldroach/cockroach.lua",timeStep);
     
     //increment loop count 
     Enemy::incrementLoopCount();
@@ -653,6 +700,7 @@ DungeonTile::TileType ScriptedEnemy::moveOnTiles_TileType(float& timeStep, std::
     return tileType;
 }
 
+
 void ScriptedEnemy::moveBack(float& timeStep){Enemy::moveBack(timeStep);}
 
 
@@ -703,8 +751,8 @@ void ScriptedEnemy::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* 
     }
    
 	//render collision box of enemy
-   //ScriptedEnemy::renderEnemyCollisionBox(camera,gRenderer);
-   //Enemy::renderEnemyView(camera,gRenderer);
+   ScriptedEnemy::renderEnemyCollisionBox(camera,gRenderer);
+   Enemy::renderEnemyView(camera,gRenderer);
 }
 
 void ScriptedEnemy::renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer)
@@ -739,8 +787,6 @@ ScriptedEnemy::ScriptedEnemyState ScriptedEnemy::getCurrentState()
 }
 
 
-
-
 void ScriptedEnemy::sound(AudioRenderer* gAudioRenderer)
 {
 	extern ALuint scream_buffer;
@@ -754,4 +800,43 @@ void ScriptedEnemy::sound(AudioRenderer* gAudioRenderer)
 	}
 }
 
+int ScriptedEnemy::lua_moveUp(lua_State* L, float& timeStep)
+{
+	Enemy::moveUp(timeStep);
+	
+    
+    return 0;
+}
 
+int ScriptedEnemy::lua_moveDown(lua_State* L, float& timeStep)
+{
+	Enemy::moveDown(timeStep);
+	
+    
+    return 0;
+}
+
+int ScriptedEnemy::lua_moveLeft(lua_State* L, float& timeStep)
+{
+	
+	Enemy::moveLeft(timeStep); 
+	
+    
+    return 0;
+}
+
+int ScriptedEnemy::lua_moveRight(lua_State* L, float& timeStep)
+{
+	Enemy::moveRight(timeStep);
+	
+    
+    return 0;
+}
+
+int ScriptedEnemy::lua_pause(lua_State* L,float& timeStep)
+{
+	Enemy::pause(timeStep); 
+	
+    
+    return 0;
+}

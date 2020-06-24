@@ -4,7 +4,12 @@
 #include "enemy.h"
 #include <array>
 
-
+//lua c ibrary files
+extern "C" {
+    #include "lua.h"
+    #include "lauxlib.h"
+    #include "lualib.h"
+}
 
 class ScriptedEnemy : public Enemy
 {
@@ -87,6 +92,12 @@ public:
         
 //Sound
 	virtual void sound(AudioRenderer* gAudioRenderer);
+	
+	int lua_moveUp(lua_State* L, float& timeStep);
+    int lua_moveDown(lua_State* L, float& timeStep);
+    int lua_moveLeft(lua_State* L, float& timeStep);
+    int lua_moveRight(lua_State* L, float& timeStep);
+    int lua_pause(lua_State* L,float& timeStep);
     
 private:
     //members not inherited from enemy
@@ -104,7 +115,17 @@ private:
     
     void renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer);
     
-    void RunLuaLogicForScriptedEnemy(std::string lua_file_path);
+//Lua functions
+    
+    //logic for scripted enemy
+    void RunLuaLogicForScriptedEnemy(std::string lua_file_path, float& timeStep);
+    
+    //wrapper functions for C++ functions to be called from Lua
+    int lua_moveOnTiles_TileType(lua_State* L,float& timeStep);
+    
+    
+    
+    
 };
 
 #endif

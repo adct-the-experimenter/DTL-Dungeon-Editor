@@ -17,15 +17,29 @@ COLLIDE_WITH_WALL = 5
 --[[ Logic implemenetation ]]--
 
 
-function logic(randomNumber, enemyState)
+--[[ random number form 1 to 4]]--
 
+function logic(timeStep,randomNumber, enemyState)
+	
+	--[[
 	print("Running logic cockroach.lua!")
 	print("random number:", randomNumber)
 	print("enemy state", enemyState)
+	--]]
+	
+	
+	if(randomNumber == 1)
+	then
+		moveLeft(timeStep)
+	--[[else if(randomNumber == 2)
+		moveLeft(timeStep)
+	else if(randomNumber == 3)
+		moveDown(timeStep)
+	else if(randomNumber == 4)
+		moveRight(timeStep)]]--
+	end
 	
 end
-
-
 
 
 
