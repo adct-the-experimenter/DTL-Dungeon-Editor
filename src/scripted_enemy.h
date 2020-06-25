@@ -92,12 +92,6 @@ public:
         
 //Sound
 	virtual void sound(AudioRenderer* gAudioRenderer);
-	
-	int lua_moveUp(lua_State* L, float& timeStep);
-    int lua_moveDown(lua_State* L, float& timeStep);
-    int lua_moveLeft(lua_State* L, float& timeStep);
-    int lua_moveRight(lua_State* L, float& timeStep);
-    int lua_pause(lua_State* L,float& timeStep);
     
 private:
     //members not inherited from enemy

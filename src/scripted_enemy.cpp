@@ -20,7 +20,7 @@ ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width
     ScriptedEnemy::pushState(ScriptedEnemy::ScriptedEnemyState::DETERMINE_DIRECTION);
     
     //initialize speed
-    float speed = 10;
+    float speed = 30;
     Enemy::setSpeed(speed);
     
     probabilitiesDirection = {0.2, 0.2,0.2,0.2,0.3};
@@ -344,8 +344,10 @@ static int function_wrap_moveUp(lua_State* L)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
 		//std::cout << "C++ function called! timeStep:" << timeStep;
-		ext_se_ptr->lua_moveUp(L,timeStep);
+		ext_se_ptr->moveUp(timeStep);
 	}
+	
+	return 0;
 }
 
 static int function_wrap_moveLeft(lua_State* L)
@@ -354,8 +356,10 @@ static int function_wrap_moveLeft(lua_State* L)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
 		//std::cout << "C++ function called! timeStep:" << timeStep;
-		ext_se_ptr->lua_moveLeft(L,timeStep);
+		ext_se_ptr->moveLeft(timeStep);
 	}
+	
+	return 0;
 }
 
 static int function_wrap_moveRight(lua_State* L)
@@ -364,8 +368,10 @@ static int function_wrap_moveRight(lua_State* L)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
 		//std::cout << "C++ function called! timeStep:" << timeStep;
-		ext_se_ptr->lua_moveRight(L,timeStep);
+		ext_se_ptr->moveRight(timeStep);
 	}
+	
+	return 0;
 }
 
 static int function_wrap_moveDown(lua_State* L)
@@ -374,8 +380,10 @@ static int function_wrap_moveDown(lua_State* L)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
 		//std::cout << "C++ function called! timeStep:" << timeStep;
-		ext_se_ptr->lua_moveDown(L,timeStep);
+		ext_se_ptr->moveDown(timeStep);
 	}
+	
+	return 0;
 }
 
 void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path,float& timeStep)
@@ -387,11 +395,11 @@ void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path,float&
 	//open all libraries
 	luaL_openlibs(L);
 	
-	//Expose the c_swap function to the lua environment
-	//lua_register(L, "moveUp", function_wrap_moveUp);
+	//Expose the c++ functions to the lua environment
+	lua_register(L, "moveUp", function_wrap_moveUp);
 	lua_register(L, "moveLeft", function_wrap_moveLeft);
-	//lua_register(L, "moveRight", function_wrap_moveRight);
-	//lua_register(L, "moveDown", function_wrap_moveDown);
+	lua_register(L, "moveRight", function_wrap_moveRight);
+	lua_register(L, "moveDown", function_wrap_moveDown);
 
 	/* load the script */
 	luaL_dofile(L, lua_file_path.c_str());
@@ -410,6 +418,7 @@ void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path,float&
 
 	/* call the function with 2 arguments, return 0 result */
 	lua_call(L, 3, 0);
+	lua_pop(L, 0);
 	
 	lua_close(L);
 }
@@ -798,45 +807,4 @@ void ScriptedEnemy::sound(AudioRenderer* gAudioRenderer)
 		float y = Enemy::getPosY();
 		//if(scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&scream_buffer);}
 	}
-}
-
-int ScriptedEnemy::lua_moveUp(lua_State* L, float& timeStep)
-{
-	Enemy::moveUp(timeStep);
-	
-    
-    return 0;
-}
-
-int ScriptedEnemy::lua_moveDown(lua_State* L, float& timeStep)
-{
-	Enemy::moveDown(timeStep);
-	
-    
-    return 0;
-}
-
-int ScriptedEnemy::lua_moveLeft(lua_State* L, float& timeStep)
-{
-	
-	Enemy::moveLeft(timeStep); 
-	
-    
-    return 0;
-}
-
-int ScriptedEnemy::lua_moveRight(lua_State* L, float& timeStep)
-{
-	Enemy::moveRight(timeStep);
-	
-    
-    return 0;
-}
-
-int ScriptedEnemy::lua_pause(lua_State* L,float& timeStep)
-{
-	Enemy::pause(timeStep); 
-	
-    
-    return 0;
 }
