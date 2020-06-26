@@ -31,6 +31,9 @@
 #include "DungeonCreator.h"
 #include "Dungeon.h"
 
+#include "lua_cpp_script_base.h"
+
+#include "content_loader.h"
 
 
 /** Constants and Global Variables**/
@@ -465,6 +468,12 @@ void Dungeon1()
     
     float x = 320; float y = 240;
     dungeonUPtr->PlaceDotInThisLocation(x,y);
+    
+    //initialize lua interpreter for scripted enemy logic
+    InitLuaInterpreter();
+    
+    //load all necessary script files that lua interpreter must read
+    LoadAllScriptFilesFromXMLFiles();
      
 	/** GameLoop **/
 	//set base game state to gDungeon1
@@ -510,6 +519,9 @@ void Dungeon1()
 	//delete doors and keys
 	//delete tiles
 	dungeonUPtr->freeResources();
+	
+	//close lua interpreter
+	EndLuaInterpreter();
 	
 	if(baseGameState->getState() == GameState::State::EXIT )
 	{

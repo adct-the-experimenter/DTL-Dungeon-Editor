@@ -46,6 +46,7 @@ include_directories(/usr/include /usr/local/include ./src ${PROJECT_INCLUDE_DIR}
 
 
 set(SOURCES src/main.cpp
+src/lua_cpp_script_base.cpp src/content_loader.cpp
 src/DungeonXMLCreator.cpp src/DungeonXMLReader.cpp
 src/DungeonCreator.cpp
 src/Dungeon.cpp 

@@ -4,13 +4,6 @@
 #include "enemy.h"
 #include <array>
 
-//lua c ibrary files
-extern "C" {
-    #include "lua.h"
-    #include "lauxlib.h"
-    #include "lualib.h"
-}
-
 class ScriptedEnemy : public Enemy
 {
     
@@ -113,12 +106,6 @@ private:
     
     //logic for scripted enemy
     void RunLuaLogicForScriptedEnemy(std::string lua_file_path, float& timeStep);
-    
-    //wrapper functions for C++ functions to be called from Lua
-    int lua_moveOnTiles_TileType(lua_State* L,float& timeStep);
-    
-    
-    
     
 };
 
