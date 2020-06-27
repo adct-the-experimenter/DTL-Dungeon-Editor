@@ -10,10 +10,14 @@
 #include <functional>
 
 #include "lua_cpp_script_base.h"
+#include "content_loader.h"
 
 //constructor
-ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width,height)
+ScriptedEnemy::ScriptedEnemy(std::string name, int x,int y,int width,int height) : Enemy(x,y,width,height)
 {
+	
+	m_name = name;
+	
     //std::int16_t initialHealth = 50;
     Enemy::setHealth(cockroachHealth);
     Enemy::setEnemyState(Enemy::EnemyState::MOVING_NO_PLAYER);
@@ -361,7 +365,7 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
     ScriptedEnemy::reactToCollision();
     Enemy::checkViewForPlayer();
     
-    RunLuaLogicForScriptedEnemy("../data/EnemyPacks/goldroach/cockroach.lua",timeStep);
+    RunLuaLogicForScriptedEnemy(enemyContentMap.at(m_name).script_filepath,timeStep);
     
     //increment loop count 
     Enemy::incrementLoopCount();

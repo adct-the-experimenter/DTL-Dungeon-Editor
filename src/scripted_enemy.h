@@ -10,7 +10,7 @@ class ScriptedEnemy : public Enemy
 public:
 
  //constructor to set up resources
-    ScriptedEnemy( int x, int y,int width,int height);
+    ScriptedEnemy( std::string name, int x, int y,int width,int height);
 
     //destructor to free resources
     virtual ~ScriptedEnemy();
@@ -88,6 +88,8 @@ public:
     
 private:
     //members not inherited from enemy
+    
+    std::string m_name;
     
     //Array for probabilities of which direction to take
     std::array <double,5> probabilitiesDirection;
