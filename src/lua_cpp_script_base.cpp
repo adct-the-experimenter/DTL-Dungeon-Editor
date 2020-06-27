@@ -76,20 +76,6 @@ void InitLuaInterpreter()
 	
 }
 
-void LoadAllScriptFilesFromXMLFiles()
-{
-	std::vector <std::string> enemyFiles;
-	
-	std::string xml_enemy_scripts_file_dir = DATADIR_STR + "/EnemyPacks";
-	std::string xml_enemy_scripts_file_path = xml_enemy_scripts_file_dir + "/enemy_directory.xml";
-	GetScriptFilesFromEnemyDirXMLFile(xml_enemy_scripts_file_dir,xml_enemy_scripts_file_path,&enemyFiles);
-	
-	for(auto it = 0; it < enemyFiles.size(); it++)
-	{
-		/* load the script */
-		luaL_dofile(L, enemyFiles[it].c_str());
-	}
-}
 
 void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, float& timeStep,int& randNumber, int& enemyState )
 {

@@ -160,7 +160,7 @@ void EnemyInventory::freeEnemyVector()
     }
 }
 
-void EnemyInventory::CreateScriptEnemy()
+void EnemyInventory::CreateScriptEnemy(std::string enemy_type)
 {
 	
 	//make it a cockroach

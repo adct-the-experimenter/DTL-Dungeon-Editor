@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <EnemyRoot>
+  <Name>goldroach</Name>
   <Texture path="cockroach.png" />
   <WalkClips>
     <clip_width width="51" />

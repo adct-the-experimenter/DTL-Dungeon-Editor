@@ -1,12 +1,14 @@
-#include "load_script_files.h"
+#include "content_loader.h"
 
 #include "pugixml.hpp"
 #include <iostream>
 #include <string>
+#include "globalvariables.h"
 
-void GetScriptFilesFromEnemyDirXMLFile(std::string xml_enemy_scripts_file_dir,
-									   std::string xml_enemy_scripts_file_path,
-									   std::vector <std::string> *enemyFiles)
+enemy_content_map enemyContentMap;
+
+void SetEnemyContentFromEnemyDirXMLFile(std::string xml_enemy_scripts_file_dir,
+									   std::string xml_enemy_scripts_file_path)
 {
 	// Create empty XML document within memory
     pugi::xml_document doc;
@@ -28,15 +30,30 @@ void GetScriptFilesFromEnemyDirXMLFile(std::string xml_enemy_scripts_file_dir,
     size_t iterator = 0;
 	
 	//go through each tile type in tiles node
-	for (pugi::xml_node filePathNode = enemyDirRoot.first_child(); filePathNode; filePathNode = filePathNode.next_sibling())
-	{	
-		std::string valString = filePathNode.first_child().value();
+	for (pugi::xml_node enemyNode = enemyDirRoot.first_child(); enemyNode; enemyNode = enemyNode.next_sibling())
+	{
+		
+		std::string valName = enemyNode.attribute("name").value();
+		std::string valFilepath= enemyNode.attribute("filepath").value();
 		
 		//assuming file paths in xml file is set relative to xml filepath itself
-		std::string filepath = xml_enemy_scripts_file_dir + "/" + valString;
+		std::string filepath = xml_enemy_scripts_file_dir + "/" + valFilepath;
 		std::cout << "file read:" << filepath << std::endl;
-		enemyFiles->push_back(valString);
+		
+		EnemyContent ec; ec.name = valName; ec.script_filepath = filepath;
+		std::pair<std::string,EnemyContent> thisEnemyContentPair (valName,ec);
+		enemyContentMap.insert (thisEnemyContentPair);
 		
 		iterator++;		
 	}
 }
+
+void LoadAllScriptFilesFromXMLFiles()
+{	
+	std::string xml_enemy_scripts_file_dir = DATADIR_STR + "/EnemyPacks";
+	std::string xml_enemy_scripts_file_path = xml_enemy_scripts_file_dir + "/enemy_directory.xml";
+	SetEnemyContentFromEnemyDirXMLFile(xml_enemy_scripts_file_dir,xml_enemy_scripts_file_path);
+	
+}
+
+

@@ -1,6 +1,16 @@
 #include <string>
 #include <vector>
+#include <unordered_map>
 
-void GetScriptFilesFromEnemyDirXMLFile(std::string xml_enemy_scripts_file_dir,
-							   std::string xml_enemy_scripts_file_path,
-							   std::vector <std::string> *enemyFiles);
+struct EnemyContent
+{
+	std::string name;
+	std::string script_filepath;
+};
+
+typedef std::unordered_map<std::string,EnemyContent> enemy_content_map;
+
+extern enemy_content_map enemyContentMap;
+
+void LoadAllScriptFilesFromXMLFiles();
+

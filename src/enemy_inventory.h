@@ -46,7 +46,7 @@ public:
 	void freeEnemyMedia();
 	
 	//Enemy construction and placement
-	void CreateScriptEnemy();
+	void CreateScriptEnemy(std::string enemy_type);
 private:
 	std::vector <Enemy*> enemies_vector;
 };
