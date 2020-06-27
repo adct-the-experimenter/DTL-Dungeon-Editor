@@ -471,9 +471,6 @@ void Dungeon1()
     
     //initialize lua interpreter for scripted enemy logic
     InitLuaInterpreter();
-    
-    //load all necessary script files that lua interpreter must read
-    LoadAllScriptFilesFromXMLFiles();
      
 	/** GameLoop **/
 	//set base game state to gDungeon1
@@ -810,6 +807,10 @@ bool loadMedia()
 		printf("Failed to load player media! \n");
 		return false;
 	}
+	
+	//load all necessary
+    LoadContentFromXMLFiles();
+    
     //load enemy media
     if(!loadEnemyMedia(gRenderer))
     {

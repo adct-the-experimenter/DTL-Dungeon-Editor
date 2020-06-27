@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <EnemyDirRoot>
-	<enemy name="goldroach" filepath="goldroach/cockroach.lua"  />
+	<enemy name="goldroach" xmldefpath="goldroach/cockroach.xml" scriptfilepath="goldroach/cockroach.lua" mediaDir="goldroach" />
 </EnemyDirRoot>

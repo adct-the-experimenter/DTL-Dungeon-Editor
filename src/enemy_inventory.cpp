@@ -1,5 +1,7 @@
 #include "enemy_inventory.h"
 
+#include "content_loader.h"
+
 EnemyInventory::EnemyInventory()
 {
 	
@@ -165,7 +167,8 @@ void EnemyInventory::CreateScriptEnemy(std::string enemy_type)
 	
 	//make it a cockroach
 	ScriptedEnemy* thisEnemy = new ScriptedEnemy(0,0,55,65);
-	thisEnemy->setPointersToMedia(&script_enemy_texture,script_enemy_walk_clips);
+	thisEnemy->setPointersToMedia(&enemyContentMap.at(enemy_type).script_enemy_texture,
+									enemyContentMap.at(enemy_type).script_enemy_walk_clips);
 	
 	enemies_vector.push_back(thisEnemy);
 }

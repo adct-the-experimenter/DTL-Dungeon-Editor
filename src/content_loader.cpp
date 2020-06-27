@@ -34,13 +34,21 @@ void SetEnemyContentFromEnemyDirXMLFile(std::string xml_enemy_scripts_file_dir,
 	{
 		
 		std::string valName = enemyNode.attribute("name").value();
-		std::string valFilepath= enemyNode.attribute("filepath").value();
+		std::string valFilepath= enemyNode.attribute("scriptfilepath").value();
+		std::string valMediaDir = enemyNode.attribute("mediaDir").value();
+		std::string valXMLDefFilepath = enemyNode.attribute("xmldefpath").value();
 		
 		//assuming file paths in xml file is set relative to xml filepath itself
 		std::string filepath = xml_enemy_scripts_file_dir + "/" + valFilepath;
 		std::cout << "file read:" << filepath << std::endl;
+		std::string mediaDir = xml_enemy_scripts_file_dir + "/" + valMediaDir;
+		std::string xml_def_fp = xml_enemy_scripts_file_dir + "/" + valXMLDefFilepath;
 		
-		EnemyContent ec; ec.name = valName; ec.script_filepath = filepath;
+		EnemyContent ec; 
+		ec.name = valName; 
+		ec.script_filepath = filepath;
+		ec.mediaDir = mediaDir;
+		ec.xml_def_filepath = xml_def_fp;
 		std::pair<std::string,EnemyContent> thisEnemyContentPair (valName,ec);
 		enemyContentMap.insert (thisEnemyContentPair);
 		
@@ -48,7 +56,7 @@ void SetEnemyContentFromEnemyDirXMLFile(std::string xml_enemy_scripts_file_dir,
 	}
 }
 
-void LoadAllScriptFilesFromXMLFiles()
+void LoadContentFromXMLFiles()
 {	
 	std::string xml_enemy_scripts_file_dir = DATADIR_STR + "/EnemyPacks";
 	std::string xml_enemy_scripts_file_path = xml_enemy_scripts_file_dir + "/enemy_directory.xml";

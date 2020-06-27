@@ -74,7 +74,7 @@ bool loadScriptedEnemyVisualMedia(std::string xml_file_path,std::string xml_file
     
     pugi::xml_node root = doc.child("EnemyRoot");
     
-    std::string cTexFilePath = xml_file_dir + root.child("Texture").attribute("path").value();
+    std::string cTexFilePath = xml_file_dir + "/" + root.child("Texture").attribute("path").value();
     
     //initialize texture
     if(!cTexture->loadFromFile(cTexFilePath.c_str(),gRenderer) )
@@ -303,7 +303,7 @@ void freeScriptedEnemyVisualMedia(LTexture* cTexture)
 {
     if(cTexture != nullptr)
     {
-        //delete cTexture;
+        delete cTexture;
         cTexture = nullptr;
     }
 }
