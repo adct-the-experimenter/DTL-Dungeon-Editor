@@ -102,7 +102,12 @@ void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, f
 		lua_pushnumber(L, loopCount);
 
 		/* call the function with 4 arguments, return 0 result */
-		lua_call(L, 3, 0);
+		//lua_call(L, 3, 0);
+		if (lua_pcall(L, 3, 0, 0))     
+		{
+			std::cout << "lua_pcall() failed! Check lua script " << lua_file_path.c_str() << "\n";
+		}
+			
 		lua_pop(L, 0);
 		
 	}
