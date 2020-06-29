@@ -45,6 +45,12 @@ public:
  /** Move sprite**/
     virtual void move(float& timeStep);
     
+    virtual void moveUp(float& timeStep);
+    virtual void moveLeft(float& timeStep);
+    virtual void moveRight(float& timeStep);
+    virtual void moveDown(float& timeStep);
+    virtual void pause(float& timeStep);
+    
     virtual bool moveOnTiles(float& timeStep, std::vector<DungeonTile*> &dungeonTiles);
 
     //moves dot based on time since last render and returns tile type of tile dot collides with
@@ -103,11 +109,6 @@ private:
     void setupScriptedEnemyCollisionObject();
     
     void renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer);
-    
-//Lua functions
-    
-    //logic for scripted enemy
-    void RunLuaLogicForScriptedEnemy(std::string lua_file_path, float& timeStep);
     
 };
 

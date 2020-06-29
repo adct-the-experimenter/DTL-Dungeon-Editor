@@ -49,6 +49,7 @@ public:
     
     void setPointerToMainDot(Dot* thisDot);
     void setPointerToTimer(LTimer* thisTimer);
+    void setPointerToMainPlayer(Player* mainPlayer);
     
     //function to set pointers to media
     void setPointersToMedia( LTexture* tileMap,ALuint* source,ALuint* buffer);

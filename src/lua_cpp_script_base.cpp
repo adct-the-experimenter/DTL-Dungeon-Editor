@@ -15,7 +15,7 @@ static int function_wrap_moveUp(lua_State* L)
 	if(ext_se_ptr)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
-		//std::cout << "C++ function called! timeStep:" << timeStep;
+		//std::cout << "up called! timeStep:" << timeStep << std::endl;
 		ext_se_ptr->moveUp(timeStep);
 	}
 	
@@ -27,7 +27,7 @@ static int function_wrap_moveLeft(lua_State* L)
 	if(ext_se_ptr)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
-		//std::cout << "C++ function called! timeStep:" << timeStep;
+		//std::cout << "left called! timeStep:" << timeStep << std::endl;
 		ext_se_ptr->moveLeft(timeStep);
 	}
 	
@@ -39,7 +39,7 @@ static int function_wrap_moveRight(lua_State* L)
 	if(ext_se_ptr)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
-		//std::cout << "C++ function called! timeStep:" << timeStep;
+		//std::cout << "right called! timeStep:" << timeStep << std::endl;
 		ext_se_ptr->moveRight(timeStep);
 	}
 	
@@ -51,7 +51,7 @@ static int function_wrap_moveDown(lua_State* L)
 	if(ext_se_ptr)
 	{
 		float timeStep = lua_tonumber(L,1); //get timestep from first argument
-		//std::cout << "C++ function called! timeStep:" << timeStep;
+		//std::cout << "down called! timeStep:" << timeStep << std::endl;
 		ext_se_ptr->moveDown(timeStep);
 	}
 	
@@ -76,9 +76,13 @@ void InitLuaInterpreter()
 	
 }
 
+#include <chrono>
 
-void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, float& timeStep,int& randNumber, int& enemyState )
+void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, float& timeStep,int& enemyState, int& loopCount )
 {
+	
+	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	
 	if(L)
 	{
 		luaL_dofile(L, lua_file_path.c_str());
@@ -91,18 +95,21 @@ void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, f
 		/* the first argument, time step */
 		lua_pushnumber(L, timeStep);
 
-		/* the second argument, random number */
-		lua_pushnumber(L, randNumber);
-
 		/* the third argument, enemy state */
 		lua_pushnumber(L, enemyState);
+		
+		/* the fourth argument, loop count */
+		lua_pushnumber(L, loopCount);
 
-		/* call the function with 2 arguments, return 0 result */
+		/* call the function with 4 arguments, return 0 result */
 		lua_call(L, 3, 0);
 		lua_pop(L, 0);
 		
 	}
 	
+	//std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	
+	//std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
 }
 
 void EndLuaInterpreter()

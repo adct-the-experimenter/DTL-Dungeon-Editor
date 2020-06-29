@@ -417,6 +417,8 @@ void Dungeon1()
 		playerInventory = std::move(ptrToPlayerInventory);
 	}
 	
+	dungeonUPtr->setPointerToMainPlayer(mainPlayer);
+	
 	//add player to collision system
 	collisionHandler->addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
 	//pass pointer to player to player inventory

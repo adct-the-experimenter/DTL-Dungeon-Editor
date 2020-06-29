@@ -307,7 +307,6 @@ void freeScriptedEnemyVisualMedia(LTexture* cTexture)
 {
     if(cTexture != nullptr)
     {
-        delete cTexture;
         cTexture = nullptr;
     }
 }
@@ -341,31 +340,17 @@ void ScriptedEnemy::handleEvent_EnemyAI(RNGType& rngSeed)
 }
 
 
-
-
-void ScriptedEnemy::RunLuaLogicForScriptedEnemy(std::string lua_file_path,float& timeStep)
-{
-	int randNumber = ScriptedEnemy::getRandNumber();
-	int enemyState = (int)Enemy::getEnemyState();
-	
-	RunEnemyLogicFromScript(this, lua_file_path,timeStep, randNumber, enemyState);
-	
-}
-
 void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTiles)
 {
-    
-    //if cockroach is not colliding with wall
-    if(Enemy::getEnemyState() != Enemy::EnemyState::COLLIDE_WITH_WALL)
-    {
-        //move enemy
-        ScriptedEnemy::moveOnTiles_TileType(timeStep,dungeonTiles);
-    }
     
     ScriptedEnemy::reactToCollision();
     Enemy::checkViewForPlayer();
     
-    RunLuaLogicForScriptedEnemy(enemyContentMap.at(m_name).script_filepath,timeStep);
+    int randNumber = (int)Enemy::getRandNumber();
+	int enemyState = (int)Enemy::getEnemyState();
+	int loopCount = Enemy::getLoopCount();
+	
+	RunEnemyLogicFromScript(this,enemyContentMap.at(m_name).script_filepath,timeStep,enemyState,loopCount);
     
     //increment loop count 
     Enemy::incrementLoopCount();
@@ -586,6 +571,12 @@ void ScriptedEnemy::move(float& timeStep)
         }
     }
 }
+
+void ScriptedEnemy::moveUp(float& timeStep){Enemy::moveUp(timeStep); ScriptedEnemy::faceNorth();}
+void ScriptedEnemy::moveLeft(float& timeStep){Enemy::moveLeft(timeStep); ScriptedEnemy::faceWest();}
+void ScriptedEnemy::moveRight(float& timeStep){Enemy::moveRight(timeStep); ScriptedEnemy::faceEast();}
+void ScriptedEnemy::moveDown(float& timeStep){Enemy::moveDown(timeStep); ScriptedEnemy::faceSouth();}
+void ScriptedEnemy::pause(float& timeStep){Enemy:pause(timeStep);}
 
 
 bool touchesDungeonWallVector( SDL_Rect& box, std::vector<DungeonTile*> &dungeonTiles );
