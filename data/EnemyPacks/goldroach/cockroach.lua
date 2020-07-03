@@ -39,28 +39,26 @@ function logic(timeStep, enemyState, loopCount, enemyFaceDirection)
 	--print("face direction:", enemyFaceDirection)
 	
 	--[[ generate a random number integer from 1 to 4]]--
-	--randNumber = math.random(4) 
+	randNumber = math.random(5) 
 	
-	--[[
-	if(loopCount == 9.0)
+	if(enemyState == MOVING_NO_PLAYER)
 	then
-		if( randNumber == 1 )
+		if(loopCount == 9.0)
 		then
-		   moveUp(timeStep)
-		   moveUp(timeStep)
-		elseif( randNumber == 2 )
-		then   
-		   moveLeft(timeStep)
-		   moveDown(timeStep)
-		elseif( randNumber == 3 )
-		then
-		   moveRight(timeStep)
-		   moveUp(timeStep)
-		else
-		   moveDown(timeStep)
+			if( randNumber == 1 )
+			then
+			   moveUp(timeStep)
+			elseif( randNumber == 2 )
+			then   
+			   moveLeft(timeStep)
+			elseif( randNumber == 3 )
+			then
+			   moveRight(timeStep)
+			else
+			   moveDown(timeStep)
+			end
 		end
 	end
-	]]--
 	
 	if(enemyState == MOVING_SEE_PLAYER)
 	then
@@ -97,7 +95,3 @@ function logic(timeStep, enemyState, loopCount, enemyFaceDirection)
 	end
 	
 end
-
-
-
-
