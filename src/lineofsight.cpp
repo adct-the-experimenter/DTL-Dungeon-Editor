@@ -16,17 +16,6 @@ LineOfSight::~LineOfSight()
     
 }
 
-void LineOfSight::addLineOfSightToCollisionHandler()
-{
-    //addObjectToCollisionSystem(&LOS_ColliderObject);
-}
-
-void LineOfSight::removeLineOfSightFromCollisionHandler()
-{
-    //removeObjectFromCollisionSystem(&LOS_ColliderObject);
-}
-
-
 void LineOfSight::setLineWidth(std::int16_t& width){ lineWidth = width;}
 
 void LineOfSight::setLineHeight(std::int16_t& height){lineHeight = height;}
@@ -135,6 +124,7 @@ void LineOfSight::faceDownRight()
     LOS_collisionBox.y = yPos + LOS_collisionBox.h;
 }
 
+
 bool LineOfSight::getBool_LineOfSightHitHero()
 {
     //if line of sight collision object hit player
@@ -152,13 +142,7 @@ void LineOfSight::renderLineSight(SDL_Rect& camera, SDL_Renderer* gRenderer)
                            0,
                            0,
                            50);
-    /*
-    std::cout << "Enemy LOS box :" << "x: " << LOS_collisionBox.x << " " 
-                                << "y: " << LOS_collisionBox.y << " "
-                                << "w: " << LOS_collisionBox.w << " "
-                                << "h: " << LOS_collisionBox.h << std::endl;
     
-    */
     SDL_Rect renderRect = {LOS_collisionBox.x - camera.x, LOS_collisionBox.y - camera.y, 
                             LOS_collisionBox.w, LOS_collisionBox.h};
                             

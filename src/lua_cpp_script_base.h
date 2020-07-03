@@ -16,7 +16,7 @@ void InitLuaInterpreter();
 void LoadAllScriptFilesFromXMLFiles();
 
 //function to tun enemy logic from lua script
-void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, float& timeStep,int& enemyState, int& loopCount );
+void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, float& timeStep,int& enemyState, int& loopCount, int& enemyFaceDirection );
 
 //function to free resources for lua interpreter and close it
 void EndLuaInterpreter();

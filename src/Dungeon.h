@@ -112,6 +112,8 @@ public:
     virtual void logic();
     virtual void sound(AudioRenderer* gAudioRenderer);
     virtual void render(SDL_Renderer* gRenderer);
+    
+    void SetPointerToCollisionHandlerForEnemyInventory(CollisonHandler* collisionHandler);
 
     //exit by only touching the tile
     void exitByTile();
@@ -185,9 +187,10 @@ private:
     Player* mainPlayerPointer;
 
 /** Items in Dungeon **/
-
     
     EnemyInventory m_enemy_inventory;
+    
+    CollisonHandler* m_collision_handler_ptr;
     
     void setTilesAroundCenterToFloor(size_t& xCol,size_t& yRow,size_t& xEndCol, size_t& yEndRow );
     

@@ -35,7 +35,7 @@ ScriptedEnemy::ScriptedEnemy(std::string name, int x,int y,int width,int height)
     //set view of cockroach
     Enemy::setEnemyView(Enemy::EnemyViewOption::LINE_OF_SIGHT);
     
-    std::int16_t lineWidth = width; std::int16_t lineHeight = height * 2.5;
+    std::int16_t lineWidth = width; std::int16_t lineHeight = height * 2;
     Enemy::setLineOfSightDimensions(lineWidth,lineHeight);
     Enemy::setLineOfSightToEnemyBox();
     
@@ -343,14 +343,16 @@ void ScriptedEnemy::handleEvent_EnemyAI(RNGType& rngSeed)
 void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTiles)
 {
     
-    ScriptedEnemy::reactToCollision();
     Enemy::checkViewForPlayer();
+    ScriptedEnemy::reactToCollision();
     
-    int randNumber = (int)Enemy::getRandNumber();
+    //int randNumber = (int)Enemy::getRandNumber();
 	int enemyState = (int)Enemy::getEnemyState();
 	int loopCount = Enemy::getLoopCount();
+	int enemyFaceDirection = (int)Enemy::getFaceDirection();
 	
-	RunEnemyLogicFromScript(this,enemyContentMap.at(m_name).script_filepath,timeStep,enemyState,loopCount);
+	RunEnemyLogicFromScript(this,enemyContentMap.at(m_name).script_filepath,
+							timeStep,enemyState,loopCount,enemyFaceDirection);
     
     //increment loop count 
     Enemy::incrementLoopCount();

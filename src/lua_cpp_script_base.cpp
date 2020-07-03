@@ -78,7 +78,8 @@ void InitLuaInterpreter()
 
 #include <chrono>
 
-void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, float& timeStep,int& enemyState, int& loopCount )
+void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, 
+							float& timeStep,int& enemyState, int& loopCount, int& enemyFaceDirection )
 {
 	
 	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -100,10 +101,12 @@ void RunEnemyLogicFromScript(ScriptedEnemy* se_ptr, std::string lua_file_path, f
 		
 		/* the fourth argument, loop count */
 		lua_pushnumber(L, loopCount);
+		
+		/* the fifth argument, enemy face direction*/
+		lua_pushnumber(L, enemyFaceDirection);
 
 		/* call the function with 4 arguments, return 0 result */
-		//lua_call(L, 3, 0);
-		if (lua_pcall(L, 3, 0, 0))     
+		if (lua_pcall(L, 4, 0, 0))     
 		{
 			std::cout << "lua_pcall() failed! Check lua script " << lua_file_path.c_str() << "\n";
 		}

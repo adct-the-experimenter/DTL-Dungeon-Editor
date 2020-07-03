@@ -47,8 +47,12 @@ public:
 	
 	//Enemy construction and placement
 	void CreateScriptEnemy(std::string enemy_type);
+	
+	void SetPointerToCollisionHandler(CollisonHandler* thisCollisionHandler);
+	
 private:
 	std::vector <Enemy*> enemies_vector;
+	CollisonHandler* m_collision_handler_ptr;
 };
 
 

@@ -436,7 +436,6 @@ void Dungeon1()
 	
 	playerInventory->unequipWeaponFromPlayer();
 	collisionHandler->EmptyPlayerEquippedWeapon();
-
 	
     //generate an empty dungeon
     
@@ -470,6 +469,9 @@ void Dungeon1()
     
     float x = 320; float y = 240;
     dungeonUPtr->PlaceDotInThisLocation(x,y);
+    
+    dungeonUPtr->SetPointerToCollisionHandlerForEnemyInventory(collisionHandler.get());
+    collisionHandler->setCameraForCollisionSystem(&camera);
     
     //initialize lua interpreter for scripted enemy logic
     InitLuaInterpreter();

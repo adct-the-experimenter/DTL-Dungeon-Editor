@@ -400,30 +400,6 @@ void Dungeon::logic()
 	//Restart timer
     timer->start();
 	
-    //move dot back if collides with door
-    //Dungeon::doorCollision(timeStep);
-/*
-     //check if main dot collides with any key while another key hasn't been picked making rest of keys disappear in render
-    if(!keyDisappear)
-    {
-        Dungeon::checkKeyAndDot();
-    }
-
-
-    //check if a key has been picked up
-    for(size_t i=0; i < (*dungeonKeys).size(); ++i )
-    {
-        if( (*dungeonKeys)[i]->getKeyBool() == true )
-        {
-            keyDisappear = true;
-        }
-    // Exit State and Next State Conditions
-
-
-    //exit by door if main dot collides with right key
-    Dungeon::checkWrongDoor();
-    Dungeon::exitByDoor();
-*/
 }
 
 void Dungeon::exitByTile()
@@ -679,6 +655,11 @@ void Dungeon::freeResources()
 
 void Dungeon::setPointerToMainPlayer(Player* mainPlayer){mainPlayerPointer = mainPlayer;}
 
+void Dungeon::SetPointerToCollisionHandlerForEnemyInventory(CollisonHandler* collisionHandler)
+{
+	m_collision_handler_ptr = collisionHandler;
+	m_enemy_inventory.SetPointerToCollisionHandler(collisionHandler);
+}
 
 /*
 
