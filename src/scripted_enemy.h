@@ -10,7 +10,9 @@ class ScriptedEnemy : public Enemy
 public:
 
  //constructor to set up resources
-    ScriptedEnemy( std::string name, int x, int y,int width,int height);
+    ScriptedEnemy( std::string name, 
+					std::int16_t health, float speed,
+					int x, int y,int width,int height);
 
     //destructor to free resources
     virtual ~ScriptedEnemy();
@@ -19,16 +21,7 @@ public:
     //function to load media for sprite
     virtual bool loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* gRenderer);
     
-    //function to load media outside class
-    friend bool loadScriptedEnemyMedia(std::string xml_file_path,
-									LTexture* cTexture,
-                                    std::vector <SDL_Rect> &clips,
-                                    SDL_Renderer* gRenderer );
-    //function to free media outside of class
-    friend void freeScriptedEnemyMedia(LTexture* cTexture);                                
-                        
-    
-    //function to set 
+    //function to set pointers to texture and walking clips for enemy
     void setPointersToMedia(LTexture* cTexture,std::vector <SDL_Rect> &clips);
     
 

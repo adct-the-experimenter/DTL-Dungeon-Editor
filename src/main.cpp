@@ -408,8 +408,6 @@ void Dungeon1()
 		gameInventory->SetPointerToCollisionHandler(collisionHandler.get());
 	}
 	
-
-	
 	std::unique_ptr <PlayerInventory> ptrToPlayerInventory(new PlayerInventory());
     if(!ptrToPlayerInventory){return;}
 	else

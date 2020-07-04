@@ -68,12 +68,8 @@ bool setupLoad_GreedyZombie(SDL_Renderer* gRenderer)
 }
 
 //scripted enemy media
-//LTexture script_enemy_texture;
-//std::vector <SDL_Rect> script_enemy_walk_clips;
 bool setupLoad_ScriptedEnemy(std::string enemy_type,SDL_Renderer* gRenderer)
 {
-	//std::string xml_file_dir = DATADIR_STR + "/EnemyPacks/goldroach/";
-	//std::string xml_file_path = xml_file_dir + "cockroach.xml";
     
 	std::string xml_file_dir = enemyContentMap.at(enemy_type).mediaDir;
 	std::string xml_file_path = enemyContentMap.at(enemy_type).xml_def_filepath;
@@ -91,6 +87,13 @@ bool setupLoad_ScriptedEnemy(std::string enemy_type,SDL_Renderer* gRenderer)
         std::cout << xml_file_path << " failed.\n";
         return false;
     }
+    else
+    {
+		if(!setEnemyTypeAttributes(&enemyContentMap.at(enemy_type),enemyContentMap.at(enemy_type).xml_def_filepath) )
+		{
+			return false;
+		}
+	}
     
     return true;
 }

@@ -166,7 +166,9 @@ void EnemyInventory::CreateScriptEnemy(std::string enemy_type)
 {
 	
 	//make it a scripted enemy
-	ScriptedEnemy* thisEnemy = new ScriptedEnemy(enemy_type,0,0,55,65);
+	ScriptedEnemy* thisEnemy = new ScriptedEnemy(enemy_type,
+												 enemyContentMap.at(enemy_type).health,enemyContentMap.at(enemy_type).speed,
+												 0,0,55,65);
 	thisEnemy->setPointersToMedia(&enemyContentMap.at(enemy_type).script_enemy_texture,
 									enemyContentMap.at(enemy_type).script_enemy_walk_clips);
 	
