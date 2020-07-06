@@ -31,6 +31,9 @@
 #include "DungeonCreator.h"
 #include "Dungeon.h"
 
+#include "lua_cpp_script_base.h"
+
+#include "content_loader.h"
 
 
 /** Constants and Global Variables**/
@@ -405,14 +408,14 @@ void Dungeon1()
 		gameInventory->SetPointerToCollisionHandler(collisionHandler.get());
 	}
 	
-
-	
 	std::unique_ptr <PlayerInventory> ptrToPlayerInventory(new PlayerInventory());
     if(!ptrToPlayerInventory){return;}
 	else
 	{
 		playerInventory = std::move(ptrToPlayerInventory);
 	}
+	
+	dungeonUPtr->setPointerToMainPlayer(mainPlayer);
 	
 	//add player to collision system
 	collisionHandler->addPlayerToCollisionSystem( mainPlayer->getCollisionObjectPtr() );
@@ -431,7 +434,6 @@ void Dungeon1()
 	
 	playerInventory->unequipWeaponFromPlayer();
 	collisionHandler->EmptyPlayerEquippedWeapon();
-
 	
     //generate an empty dungeon
     
@@ -465,6 +467,12 @@ void Dungeon1()
     
     float x = 320; float y = 240;
     dungeonUPtr->PlaceDotInThisLocation(x,y);
+    
+    dungeonUPtr->SetPointerToCollisionHandlerForEnemyInventory(collisionHandler.get());
+    collisionHandler->setCameraForCollisionSystem(&camera);
+    
+    //initialize lua interpreter for scripted enemy logic
+    InitLuaInterpreter();
      
 	/** GameLoop **/
 	//set base game state to gDungeon1
@@ -510,6 +518,9 @@ void Dungeon1()
 	//delete doors and keys
 	//delete tiles
 	dungeonUPtr->freeResources();
+	
+	//close lua interpreter
+	EndLuaInterpreter();
 	
 	if(baseGameState->getState() == GameState::State::EXIT )
 	{
@@ -798,6 +809,10 @@ bool loadMedia()
 		printf("Failed to load player media! \n");
 		return false;
 	}
+	
+	//load all necessary
+    LoadContentFromXMLFiles();
+    
     //load enemy media
     if(!loadEnemyMedia(gRenderer))
     {

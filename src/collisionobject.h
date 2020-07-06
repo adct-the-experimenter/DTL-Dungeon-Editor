@@ -8,7 +8,7 @@ enum class CollisionBoxOwnerType : std::int8_t { NONE = 0,
                                                 PLAYER ,
                                                 //Enemy 
                                                 COCKROACH, LINE_OF_SIGHT,
-                                                GREEDY_ZOMBIE,
+                                                GREEDY_ZOMBIE, SCRIPTED_ENEMY,
                                                 //Obstacle
                                                 HOLE,
                                                 //Weapons
@@ -24,7 +24,8 @@ enum class CollisionType : std::int8_t {
                                         HIT_PLAYER, HIT_BY_SWORD, HIT_BY_BULLET,
                                         //for player
                                         HIT_BY_COCKROACH, HIT_BY_ZOMBIE,
-                                        COLLIDING_WITH_HOLE
+                                        COLLIDING_WITH_HOLE,
+                                        HIT_BY_SCRIPTED_ENEMY
                                         };
 
 
@@ -44,6 +45,8 @@ struct CollisionObject
     CollisionType typeOfCollision = CollisionType::NONE;
     //Info on direction of collision
     CollisionDirection directionOfCollision = CollisionDirection::NONE;
+    //amount of damage that scripted enemy has
+    int scriptedDamage = 0;
 };
 
 //function to check collision between SDL_Rect

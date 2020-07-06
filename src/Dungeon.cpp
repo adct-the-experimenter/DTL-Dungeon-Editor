@@ -233,9 +233,6 @@ void Dungeon::moveMainDot(float& timeStep)
     //move dot independent of frames, but rather dependent on time. includes collision detection
     mainDotPointer->moveOnTiles(timeStep, dungeonTileSet );
 
-    //Restart timer
-    timer->start();
-
 }
 
 void Dungeon::PlaceDotInThisLocation(float& x, float& y)
@@ -378,6 +375,19 @@ void Dungeon::logic()
     //std::cout << "Logic called! \n";
     float timeStep = timer->getTicks() / 1000.f; //frame rate
 
+
+//logic for player
+    if(mainPlayerPointer != nullptr)
+    {
+        mainPlayerPointer->logic(timeStep);
+        if(mainPlayerPointer->getHealth() <= 0 ){Dungeon::setState(GameState::State::GAME_OVER);}
+        
+        //if main player collides with exit tile
+        //win game
+        //if( checkCollision(exitTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){ Labyrinth::setState(GameState::State::NEXT);}
+        //if( checkCollision(dungeonEntranceTile->getBox(),mainPlayerPointer->getCollisionBox() ) ){Labyrinth::setState(GameState::State::NEXT); hitDungeonEntrace = true;}
+    }
+    
     //move main dot
     Dungeon::moveMainDot(timeStep);
     
@@ -386,32 +396,10 @@ void Dungeon::logic()
                         
     //check for and remove dead enemeies
     m_enemy_inventory.checkAndRemoveDeadEnemies(lCamera);
-
-
-    //move dot back if collides with door
-    //Dungeon::doorCollision(timeStep);
-/*
-     //check if main dot collides with any key while another key hasn't been picked making rest of keys disappear in render
-    if(!keyDisappear)
-    {
-        Dungeon::checkKeyAndDot();
-    }
-
-
-    //check if a key has been picked up
-    for(size_t i=0; i < (*dungeonKeys).size(); ++i )
-    {
-        if( (*dungeonKeys)[i]->getKeyBool() == true )
-        {
-            keyDisappear = true;
-        }
-    // Exit State and Next State Conditions
-
-
-    //exit by door if main dot collides with right key
-    Dungeon::checkWrongDoor();
-    Dungeon::exitByDoor();
-*/
+	
+	//Restart timer
+    timer->start();
+	
 }
 
 void Dungeon::exitByTile()
@@ -665,6 +653,13 @@ void Dungeon::freeResources()
     
 }
 
+void Dungeon::setPointerToMainPlayer(Player* mainPlayer){mainPlayerPointer = mainPlayer;}
+
+void Dungeon::SetPointerToCollisionHandlerForEnemyInventory(CollisonHandler* collisionHandler)
+{
+	m_collision_handler_ptr = collisionHandler;
+	m_enemy_inventory.SetPointerToCollisionHandler(collisionHandler);
+}
 
 /*
 

@@ -4,6 +4,7 @@
 #include "globalvariables.h"
 #include "othercockroach.h"
 #include "greedy_zombie.h"
+#include "scripted_enemy.h"
 
 extern std::vector <Enemy*> enemies; 
 
@@ -31,6 +32,15 @@ bool loadGreedyZombieMedia(LTexture* cTexture,
                         SDL_Renderer* gRenderer );
 void freeGreedyZombieMedia(LTexture* cTexture);
 
+//Scripted Enemy media
+bool setupLoad_ScriptedEnemy(std::string enemy_type,SDL_Renderer* gRenderer);
+//extern LTexture script_enemy_texture;
+//extern std::vector <SDL_Rect> script_enemy_walk_clips;
+bool loadScriptedEnemyVisualMedia(std::string xml_file_path,std::string xml_file_dir,
+						LTexture* cTexture,
+                        std::vector <SDL_Rect> &clips,
+                        SDL_Renderer* gRenderer );
+void freeScriptedEnemyVisualMedia(LTexture* cTexture);
 
 void freeEnemyMedia();
 

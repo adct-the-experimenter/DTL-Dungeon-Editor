@@ -15,11 +15,19 @@ public:
     DungeonCreator();
     ~DungeonCreator();
     
+    enum class DungeonCreatorState : std::int8_t { NONE = 0, PUT_TILE, PUT_ENEMY, PUT_ITEM};
+    enum class MouseState : std::int8_t {NONE = 0, MOUSE_DOWN, MOUSE_UP, MOUSE_MOVING};
+    
+    
+    enum class ItemInput : std::int8_t {NONE = 0};
+    
     void SetDungeonToEdit(Dungeon* dPtr);
     
     void SetupCamera();
     
     void PutTile(DungeonTile::TileType type);
+    
+    void PutEnemy(std::string enemy_type);
    
     //game loop function to be called from main
     void handle_events(Event& thisEvent);
@@ -28,13 +36,7 @@ public:
     void GetTextInput(std::string text);
     
     
-    enum class DungeonCreatorState : std::int8_t { NONE = 0, PUT_TILE, PUT_ENEMY, PUT_ITEM};
-    enum class MouseState : std::int8_t {NONE = 0, MOUSE_DOWN, MOUSE_UP, MOUSE_MOVING};
     
-    
-    enum class EnemyInput : std::int8_t {NONE = 0, COCKROACH, ZOMBIE };
-    
-    enum class ItemInput : std::int8_t {NONE = 0};
     
 private:
 
@@ -51,7 +53,7 @@ private:
     void SetStateFromInputCode();
     
     DungeonTile::TileType m_tile_input;
-    EnemyInput m_enemy_input;
+    std::string m_enemy_input;
     ItemInput m_item_input;
     
 };

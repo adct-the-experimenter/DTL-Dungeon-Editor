@@ -8,12 +8,6 @@ public:
     LineOfSight();
     ~LineOfSight();
     
-    //function to add collision object of line of sight to collision handler system
-    //good in case want enemy to use line of sight or other options 
-    void addLineOfSightToCollisionHandler();
-    //function to remove collision object of line of sight from collision handler system
-    void removeLineOfSightFromCollisionHandler();
-    
     //function to set the width of the line
     //assuming it is the short side
     void setLineWidth(std::int16_t& width);

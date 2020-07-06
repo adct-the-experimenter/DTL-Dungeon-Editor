@@ -1,13 +1,15 @@
 #include "enemy_inventory.h"
 
+#include "content_loader.h"
+
 EnemyInventory::EnemyInventory()
 {
-	
+	m_collision_handler_ptr = nullptr;
 }
 
 EnemyInventory::~EnemyInventory()
 {
-	
+	m_collision_handler_ptr = nullptr;
 }
 
 void EnemyInventory::setupEnemyVector()
@@ -158,4 +160,29 @@ void EnemyInventory::freeEnemyVector()
 			enemies_vector[i] = nullptr;
 		}
     }
+}
+
+void EnemyInventory::CreateScriptEnemy(std::string enemy_type)
+{
+	
+	//make it a scripted enemy
+	ScriptedEnemy* thisEnemy = new ScriptedEnemy(enemy_type,
+												 enemyContentMap.at(enemy_type).health,enemyContentMap.at(enemy_type).speed,
+												 0,0,55,65);
+	thisEnemy->setPointersToMedia(&enemyContentMap.at(enemy_type).script_enemy_texture,
+									enemyContentMap.at(enemy_type).script_enemy_walk_clips);
+	
+	enemies_vector.push_back(thisEnemy);
+	
+	if(m_collision_handler_ptr)
+	{
+		m_collision_handler_ptr->addObjectToCollisionSystem(thisEnemy->getCollisionObjectPtr());
+		m_collision_handler_ptr->addObjectToCollisionSystem(thisEnemy->GetLineOfSightCollisionObject());
+	}
+	
+}
+
+void EnemyInventory::SetPointerToCollisionHandler(CollisonHandler* thisCollisionHandler)
+{
+	m_collision_handler_ptr = thisCollisionHandler;
 }

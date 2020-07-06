@@ -342,7 +342,7 @@ void Enemy::setEnemyView(Enemy::EnemyViewOption option)
     switch(option)
     {
         case Enemy::EnemyViewOption::NONE:{break;}
-        case Enemy::EnemyViewOption::LINE_OF_SIGHT:{enemy_lineofsight.addLineOfSightToCollisionHandler(); break;}
+        case Enemy::EnemyViewOption::LINE_OF_SIGHT:{ break;}
         case Enemy::EnemyViewOption::FIELD_OF_VIEW:{ break;}
     }
 }

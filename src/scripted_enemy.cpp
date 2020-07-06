@@ -1,15 +1,31 @@
 #include "scripted_enemy.h"
 
+#include "pugixml.hpp"
+#include <iostream>
+#include <string>
+
+
+
+#include <cstdio>
+#include <functional>
+
+#include "lua_cpp_script_base.h"
+#include "content_loader.h"
+
 //constructor
-ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width,height)
+ScriptedEnemy::ScriptedEnemy(std::string name, 
+							std::int16_t health, float speed,
+							int x, int y, int width, int height) : Enemy(x,y,width,height)
 {
-    //std::int16_t initialHealth = 50;
-    Enemy::setHealth(cockroachHealth);
+	
+	m_name = name;
+	
+    Enemy::setHealth(health);
+    
     Enemy::setEnemyState(Enemy::EnemyState::MOVING_NO_PLAYER);
     ScriptedEnemy::pushState(ScriptedEnemy::ScriptedEnemyState::DETERMINE_DIRECTION);
     
     //initialize speed
-    float speed = 10;
     Enemy::setSpeed(speed);
     
     probabilitiesDirection = {0.2, 0.2,0.2,0.2,0.3};
@@ -20,7 +36,7 @@ ScriptedEnemy::ScriptedEnemy(int x,int y,int width,int height) : Enemy(x,y,width
     //set view of cockroach
     Enemy::setEnemyView(Enemy::EnemyViewOption::LINE_OF_SIGHT);
     
-    std::int16_t lineWidth = width; std::int16_t lineHeight = height * 2.5;
+    std::int16_t lineWidth = width; std::int16_t lineHeight = height * 2;
     Enemy::setLineOfSightDimensions(lineWidth,lineHeight);
     Enemy::setLineOfSightToEnemyBox();
     
@@ -37,92 +53,11 @@ ScriptedEnemy::~ScriptedEnemy()
 
 void ScriptedEnemy::setupScriptedEnemyCollisionObject()
 {
-    CollisionBoxOwnerType type = CollisionBoxOwnerType::GREEDY_ZOMBIE;
+    CollisionBoxOwnerType type = CollisionBoxOwnerType::SCRIPTED_ENEMY;
     Enemy::setOwnerTypeOfCollisionObject(type);
 }
 
-bool loadScriptedEnemyMedia(LTexture* cTexture,
-                        std::vector <SDL_Rect> &walk_clips,
-                        SDL_Renderer* gRenderer )
-{
-    bool success = true;
-    
-    std::string cTexFilePath = DATADIR_STR + std::string("/Graphics/greedy-zombie.png");
-    //initialize greedy zombie image
-    if(!cTexture->loadFromFile(cTexFilePath.c_str(),gRenderer) )
-    {
-        success = false;
-        std::cout << "greedy zombie image loading failed! \n";
-    }
-    else
-    {
-        walk_clips.resize(32);
-    
-        std::int8_t width = 51;
-        std::int8_t height = 65;
-        
-        walk_clips[Sprite::UP_1] = {6,192,51,65};
-        walk_clips[Sprite::UP_2] = {70,192,51,65}; 
-        walk_clips[Sprite::UP_3] = {136,192,51,65}; 
-        walk_clips[Sprite::UP_4] = {199,192,51,65};
-        
-        walk_clips[Sprite::UP_LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::UP_LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::UP_LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::UP_LEFT_4] = {190,82,64,54};
-        
-        walk_clips[Sprite::LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::LEFT_4] = {190,82,64,54};
-        
-        walk_clips[Sprite::DOWN_LEFT_1] = {0,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_2] = {63,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_3] = {126,82,64,54};
-        walk_clips[Sprite::DOWN_LEFT_4] = {190,82,64,54};
-        
-        walk_clips[Sprite::DOWN_1] = {5,3,51,65};
-        walk_clips[Sprite::DOWN_2] = {68,3,51,65};
-        walk_clips[Sprite::DOWN_3] = {134,3,51,65};
-        walk_clips[Sprite::DOWN_4] = {198,3,51,65};
-        
-        walk_clips[Sprite::RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::RIGHT_4] = {191,138,64,54};
-        
-        walk_clips[Sprite::DOWN_RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::DOWN_RIGHT_4] = {191,138,64,54};
-        
-        walk_clips[Sprite::UP_RIGHT_1] = {0,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_2] = {65,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_3] = {127,138,64,54};
-        walk_clips[Sprite::UP_RIGHT_4] = {191,138,64,54};
-    }
-    
-    return success;
-}
 
-void freeScriptedEnemyMedia(LTexture* cTexture)
-{
-    if(cTexture != nullptr)
-    {
-        //delete cTexture;
-        cTexture = nullptr;
-    }
-}
-
-void ScriptedEnemy::setSpeed(float& speed){Enemy::setSpeed(speed);}
-
-void ScriptedEnemy::setPosX(float& x){Enemy::setPosX(x);}
-
-void ScriptedEnemy::setPosY(float& y){Enemy::setPosY(y);}
-
-void ScriptedEnemy::setVelX(float& dx){Enemy::setVelX(dx);}
-
-void ScriptedEnemy::setVelY(float& dy){Enemy::setVelY(dy);}
 
 //function to load media for sprite
 bool ScriptedEnemy::loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* gRenderer)
@@ -130,30 +65,14 @@ bool ScriptedEnemy::loadMedia(LTexture* thisTex, std::string path,SDL_Renderer* 
     return Enemy::loadMedia(thisTex,path,gRenderer);
 }
 
-void ScriptedEnemy::setPointerToTexture(LTexture* thisTex){Enemy::setPointerToTexture(thisTex);}
+
 
 void ScriptedEnemy::setPointersToMedia(LTexture* cTexture,std::vector <SDL_Rect> &clips)
 {
-    ScriptedEnemy::setPointerToTexture(cTexture);
-    ScriptedEnemy::setSpriteClips(&clips);
+    Enemy::setPointerToTexture(cTexture);
+    Enemy::setSpriteClips(&clips);
 }
 
-LTexture* ScriptedEnemy::getPointerToTexture(){return Enemy::getPointerToTexture();}
-
-void ScriptedEnemy::setSpriteClips(std::vector <SDL_Rect> *this_clips){Enemy::setSpriteClips(this_clips);}
-
-std::vector <SDL_Rect> *ScriptedEnemy::getSpriteClips(){return Enemy::getSpriteClips();}
-
-
-void ScriptedEnemy::setPlace(std::int16_t& screenWidth, std::int16_t& screenHeight)
-{
-    Enemy::setPlace(screenWidth,screenHeight);
-}
-
-void ScriptedEnemy::setCamera( SDL_Rect& camera  ) //set camera relative to dot and intialize screen and level dimensions
-{
-	Enemy::setCamera(camera);
-}
 
 void ScriptedEnemy::handleEvent(Event& thisEvent){Enemy::handleEvent(thisEvent);}
 
@@ -167,48 +86,20 @@ void ScriptedEnemy::handleEvent_EnemyAI(RNGType& rngSeed)
     ScriptedEnemy::setRandNumber(thisRandNumber);
 }
 
-void ScriptedEnemy::setRandNumber(std::int8_t& thisNum){Enemy::setRandNumber(thisNum);}
-std::int8_t ScriptedEnemy::getRandNumber(){return Enemy::getRandNumber();}
 
 void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTiles)
 {
     
-    //if cockroach is not colliding with wall
-    if(Enemy::getEnemyState() != Enemy::EnemyState::COLLIDE_WITH_WALL)
-    {
-        //move enemy
-        ScriptedEnemy::moveOnTiles_TileType(timeStep,dungeonTiles);
-    }
-        
-   
+    Enemy::checkViewForPlayer();
+    ScriptedEnemy::reactToCollision();
+    
+    //int randNumber = (int)Enemy::getRandNumber();
+	int enemyState = (int)Enemy::getEnemyState();
+	int loopCount = Enemy::getLoopCount();
+	int enemyFaceDirection = (int)Enemy::getFaceDirection();
 	
-    switch(Enemy::getEnemyState())
-    {
-        case Enemy::EnemyState::MOVING_NO_PLAYER:
-        {
-            ScriptedEnemy::runLogicState_MovingNoPlayer(timeStep); break;
-        }
-        case Enemy::EnemyState::MOVING_SEE_PLAYER:
-        {
-            ScriptedEnemy::runLogicState_MovingSeePlayer(timeStep); break;
-        }
-        case Enemy::EnemyState::HIT_BY_WEAPON:
-        {
-             ScriptedEnemy::runLogicState_HitByWeapon(timeStep); break;
-        }
-        case Enemy::EnemyState::HIT_PLAYER:
-        {
-            ScriptedEnemy::runLogicState_HitPlayer(timeStep); break;
-        }
-        case Enemy::EnemyState::PUSHED_BACK:
-        {
-            ScriptedEnemy::runLogicState_PushedBack(timeStep); break;
-        }
-        case Enemy::EnemyState::COLLIDE_WITH_WALL:
-        {
-            ScriptedEnemy::runLogicState_CollideWithWall(timeStep); break;
-        }
-    }
+	RunEnemyLogicFromScript(this,enemyContentMap.at(m_name).script_filepath,
+							timeStep,enemyState,loopCount,enemyFaceDirection);
     
     //increment loop count 
     Enemy::incrementLoopCount();
@@ -221,6 +112,8 @@ void ScriptedEnemy::logic(float& timeStep, std::vector<DungeonTile*> &dungeonTil
         //ScriptedEnemy::pushState(ScriptedEnemy::ScriptedEnemyState::DETERMINE_DIRECTION);
     }
 }
+
+
 
 
 void ScriptedEnemy::runLogicState_MovingNoPlayer(float& timeStep)
@@ -428,6 +321,12 @@ void ScriptedEnemy::move(float& timeStep)
     }
 }
 
+void ScriptedEnemy::moveUp(float& timeStep){Enemy::moveUp(timeStep); ScriptedEnemy::faceNorth();}
+void ScriptedEnemy::moveLeft(float& timeStep){Enemy::moveLeft(timeStep); ScriptedEnemy::faceWest();}
+void ScriptedEnemy::moveRight(float& timeStep){Enemy::moveRight(timeStep); ScriptedEnemy::faceEast();}
+void ScriptedEnemy::moveDown(float& timeStep){Enemy::moveDown(timeStep); ScriptedEnemy::faceSouth();}
+void ScriptedEnemy::pause(float& timeStep){Enemy:pause(timeStep);}
+
 
 bool touchesDungeonWallVector( SDL_Rect& box, std::vector<DungeonTile*> &dungeonTiles );
 
@@ -479,6 +378,7 @@ DungeonTile::TileType ScriptedEnemy::moveOnTiles_TileType(float& timeStep, std::
     return tileType;
 }
 
+
 void ScriptedEnemy::moveBack(float& timeStep){Enemy::moveBack(timeStep);}
 
 
@@ -518,19 +418,19 @@ void ScriptedEnemy::render(SDL_Rect& camera, SDL_Renderer* gRenderer, SDL_Rect* 
 {
     //Enemy::render(camera,gRenderer,clip);
     
-    if(ScriptedEnemy::getPointerToTexture() != nullptr)
+    if(Enemy::getPointerToTexture() != nullptr)
     {
         std::int16_t x = ScriptedEnemy::getCollisionBox().x - camera.x;
         std::int16_t y = ScriptedEnemy::getCollisionBox().y - camera.y;
         
         SDL_Rect* clip = ScriptedEnemy::getClipToShow();
-        if(clip == nullptr){clip = &(*ScriptedEnemy::getSpriteClips())[UP_1];}
+        if(clip == nullptr){clip = &(*Enemy::getSpriteClips())[UP_1];}
         Enemy::getPointerToTexture()->render( x, y, gRenderer,clip);
     }
    
 	//render collision box of enemy
-   //ScriptedEnemy::renderEnemyCollisionBox(camera,gRenderer);
-   //Enemy::renderEnemyView(camera,gRenderer);
+   ScriptedEnemy::renderEnemyCollisionBox(camera,gRenderer);
+   Enemy::renderEnemyView(camera,gRenderer);
 }
 
 void ScriptedEnemy::renderEnemyCollisionBox(SDL_Rect& camera, SDL_Renderer* gRenderer)
@@ -565,8 +465,6 @@ ScriptedEnemy::ScriptedEnemyState ScriptedEnemy::getCurrentState()
 }
 
 
-
-
 void ScriptedEnemy::sound(AudioRenderer* gAudioRenderer)
 {
 	extern ALuint scream_buffer;
@@ -579,5 +477,3 @@ void ScriptedEnemy::sound(AudioRenderer* gAudioRenderer)
 		//if(scream_buffer != 0){gAudioRenderer->renderAudio(x,y,&scream_buffer);}
 	}
 }
-
-
