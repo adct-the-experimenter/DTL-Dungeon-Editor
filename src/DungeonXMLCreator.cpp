@@ -59,6 +59,9 @@ void DungeonXMLCreator::CreateXMLFile(std::string xml_file_path)
 				case DungeonTile::TileType::BOTTOM_LEFT:{ nodeChild.append_child(pugi::node_pcdata).set_value("BOTTOM_LEFT"); break;}
 				case DungeonTile::TileType::BOTTOM:{ nodeChild.append_child(pugi::node_pcdata).set_value("BOTTOM"); break;}
 				case DungeonTile::TileType::BOTTOM_RIGHT:{ nodeChild.append_child(pugi::node_pcdata).set_value("BOTTOM_RIGHT"); break;}
+				
+				//invislbe wall tile is actually used for an exit/entrance tile
+				case DungeonTile::TileType::INVISIBLE_WALL:{ nodeChild.append_child(pugi::node_pcdata).set_value("ENTRANCE_EXIT"); break;}
 				default:{std::cout << "Tile type not handled!\n"; break;}
 			}
 			

@@ -128,6 +128,8 @@ void DungeonCreator::SetStateFromInputCode()
 	else if(m_textCode ==  "bottomleft"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM_LEFT; }
 	else if(m_textCode ==  "bottom"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM; }
 	else if(m_textCode ==  "bottomright"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::BOTTOM_RIGHT; }
+	//invisible wall tile is actually used for an exit/entrance tile
+	else if(m_textCode ==  "ee"){m_dungeonCreatorState = DungeonCreator::DungeonCreatorState::PUT_TILE; m_tile_input = DungeonTile::TileType::INVISIBLE_WALL; }
 	else
 	{
 		enemy_content_map::const_iterator got = enemyContentMap.find (m_textCode);

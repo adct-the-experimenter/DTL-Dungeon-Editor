@@ -55,6 +55,8 @@ void DungeonXMLReader::SetDungeonTilesFromXML(std::string filepath, Dungeon* dun
 		else if(valString ==  "BOTTOM_LEFT"){ type = DungeonTile::TileType::BOTTOM_LEFT; }
 		else if(valString ==  "BOTTOM"){ type = DungeonTile::TileType::BOTTOM; }
 		else if(valString ==  "BOTTOM_RIGHT"){ type = DungeonTile::TileType::BOTTOM_RIGHT; }
+		//invisble wall tile is actually used for an exit/entrance tile
+		else if(valString ==  "EE"){ type = DungeonTile::TileType::INVISIBLE_WALL; }
 		else{std::cout << "Tile type not handled!" << "i:" << iterator << std::endl; }
 			
 		dungeon->dungeonTileSet[iterator]->setType(type);
