@@ -24,15 +24,13 @@ Tiles:
 	-bottom
 	
 	-bottomright
-	
-	-script
 
-
+        -ee
 
 
 Enemies:
 
-
+	-script
 
 
 Items:
