@@ -175,13 +175,13 @@ void Dot::setCamera( SDL_Rect& camera  ) //set camera relative to dot and intial
 	camera.y = ( (int)mPosY + mBox.h / 2 ) - (SCREEN_HEIGHT / 2);
 
 	//Keep the camera in bounds
-	if( camera.x < 0 )
+	if( camera.x < 1 )
 	{
-		camera.x = 0;
+		camera.x = 1;
 	}
-	if( camera.y < 0 )
+	if( camera.y < 1 )
 	{
-		camera.y = 0;
+		camera.y = 1;
 	}
 }
 

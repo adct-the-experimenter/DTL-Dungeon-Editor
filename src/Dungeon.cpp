@@ -226,12 +226,12 @@ void Dungeon::setDungeonCameraForDot(std::int16_t& screenWidth, std::int16_t& sc
 void Dungeon::moveMainDot(float& timeStep)
 {
   //  std::cout << "timestep: " << timeStep <<std::endl;
-
+	
+	//move dot independent of frames, but rather dependent on time. includes collision detection
+    mainDotPointer->moveOnTiles(timeStep, dungeonTileSet );
+	
     //set camera over dot
     mainDotPointer->setCamera(lCamera);
-
-    //move dot independent of frames, but rather dependent on time. includes collision detection
-    mainDotPointer->moveOnTiles(timeStep, dungeonTileSet );
 
 }
 
